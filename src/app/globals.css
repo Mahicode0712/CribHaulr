@@ -1,26 +1,230 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Default / Cozy Theme */
+  --vibe-name: "cozy";
+  --bg-primary: #FAF5ED;
+  --bg-secondary: #F3ECE1;
+  --bg-card: #FFFFFF;
+  --text-primary: #2C221E;
+  --text-secondary: #63534C;
+  --text-muted: #8E7A71;
+  --border-color: #2C221E;
+  --shadow-color: #2C221E;
+  --accent: #D96B43;
+  --accent-hover: #C55831;
+  --accent-text: #FFFFFF;
+  --accent-soft: #FCE8E0;
+  --secondary-accent: #5E8256;
+  --sticker-bg: #F5E3A9;
+  --sticker-text: #2C221E;
+  --glow-color: rgba(217, 107, 67, 0.25);
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-vibe="dark-academia"] {
+  --vibe-name: "dark-academia";
+  --bg-primary: #1A1412;
+  --bg-secondary: #231B18;
+  --bg-card: #271F1B;
+  --text-primary: #F7F3EC;
+  --text-secondary: #D4C9BC;
+  --text-muted: #9E8F7F;
+  --border-color: #D4AF37;
+  --shadow-color: #0A0807;
+  --accent: #C89B3C;
+  --accent-hover: #DFB251;
+  --accent-text: #1A1412;
+  --accent-soft: #382C1F;
+  --secondary-accent: #8F3A2C;
+  --sticker-bg: #D4AF37;
+  --sticker-text: #1A1412;
+  --glow-color: rgba(200, 155, 60, 0.3);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+[data-vibe="minimalist"] {
+  --vibe-name: "minimalist";
+  --bg-primary: #F8F9FA;
+  --bg-secondary: #ECEEF0;
+  --bg-card: #FFFFFF;
+  --text-primary: #09090B;
+  --text-secondary: #4A4A52;
+  --text-muted: #71717A;
+  --border-color: #09090B;
+  --shadow-color: #09090B;
+  --accent: #18181B;
+  --accent-hover: #27272A;
+  --accent-text: #FFFFFF;
+  --accent-soft: #E4E4E7;
+  --secondary-accent: #52525B;
+  --sticker-bg: #E4E4E7;
+  --sticker-text: #09090B;
+  --glow-color: rgba(9, 9, 11, 0.15);
+}
+
+[data-vibe="kawaii"] {
+  --vibe-name: "kawaii";
+  --bg-primary: #FFF2F5;
+  --bg-secondary: #FFE4EC;
+  --bg-card: #FFFFFF;
+  --text-primary: #3B202D;
+  --text-secondary: #74435B;
+  --text-muted: #A36B84;
+  --border-color: #3B202D;
+  --shadow-color: #3B202D;
+  --accent: #FF5E8E;
+  --accent-hover: #F0477A;
+  --accent-text: #FFFFFF;
+  --accent-soft: #FFDDE7;
+  --secondary-accent: #9B72CF;
+  --sticker-bg: #FFF07C;
+  --sticker-text: #3B202D;
+  --glow-color: rgba(255, 94, 142, 0.3);
+}
+
+[data-vibe="neon-gamer"] {
+  --vibe-name: "neon-gamer";
+  --bg-primary: #0D0F18;
+  --bg-secondary: #141724;
+  --bg-card: #1A1E30;
+  --text-primary: #EDF3FC;
+  --text-secondary: #A0B2D4;
+  --text-muted: #627499;
+  --border-color: #00F0FF;
+  --shadow-color: #030408;
+  --accent: #00F0FF;
+  --accent-hover: #33F5FF;
+  --accent-text: #0D0F18;
+  --accent-soft: #123040;
+  --secondary-accent: #39FF14;
+  --sticker-bg: #39FF14;
+  --sticker-text: #0D0F18;
+  --glow-color: rgba(0, 240, 255, 0.4);
+}
+
+/* Base Body Styles */
+html, body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
+}
+
+/* Custom Soft-Brutalist Utilities */
+.brutal-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 24px;
+  box-shadow: 4px 4px 0px var(--shadow-color);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brutal-card-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--shadow-color);
+}
+
+.brutal-card-flat {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+}
+
+.brutal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 3px 3px 0px var(--shadow-color);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.brutal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px var(--shadow-color);
+}
+
+.brutal-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--shadow-color);
+}
+
+.brutal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.brutal-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0.85rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background-color: var(--sticker-bg);
+  color: var(--sticker-text);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.825rem;
+  box-shadow: 2px 2px 0px var(--shadow-color);
+  transform: rotate(-2.5deg);
+  transition: transform 0.2s ease;
+}
+
+.brutal-sticker:hover {
+  transform: rotate(0deg) scale(1.05);
+}
+
+/* Subtle Noise Texture Overlay */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.04;
+  background-image: url('/grain.svg');
+  background-repeat: repeat;
+}
+
+/* Accessible focus ring */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
