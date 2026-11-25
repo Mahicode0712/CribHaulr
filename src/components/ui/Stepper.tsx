@@ -30,7 +30,7 @@ export function Stepper({
     >
       <ol className="flex items-center justify-between w-full relative">
         {/* Connecting track line */}
-        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-[var(--border-color)]/20 z-0 mx-6 sm:mx-10" />
+        <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-deep/70 z-0 mx-6 sm:mx-10" />
 
         {steps.map((step, idx) => {
           const isCompleted = idx < currentStepIndex;
@@ -48,14 +48,15 @@ export function Stepper({
                 disabled={!canClick}
                 onClick={() => canClick && onStepClick(idx)}
                 aria-current={isCurrent ? "step" : undefined}
+                aria-label={`${isCompleted ? "Go back to" : "Step"} ${idx + 1}: ${step.label}`}
                 className={cn(
-                  "w-9 h-9 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center font-display font-extrabold text-xs sm:text-sm border-2 transition-all duration-200",
+                  "w-11 h-11 sm:w-12 sm:h-12 rounded-card flex items-center justify-center font-display font-extrabold text-xs sm:text-sm border-width-theme transition-all duration-200",
                   isCurrent &&
-                    "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] scale-110",
+                    "bg-accent text-on-accent border-line sticker-shadow scale-110",
                   isCompleted &&
-                    "bg-[var(--sticker-bg)] text-[var(--sticker-text)] border-[var(--border-color)] shadow-[2px_2px_0px_var(--shadow-color)] cursor-pointer hover:scale-105",
+                    "bg-accent text-on-accent border-line sticker-shadow cursor-pointer hover:scale-105",
                   isUpcoming &&
-                    "bg-[var(--bg-card)] text-[var(--text-muted)] border-[var(--border-color)]/40 shadow-none"
+                    "bg-surface text-muted border-line/40 shadow-none"
                 )}
               >
                 {isCompleted ? (
@@ -69,15 +70,15 @@ export function Stepper({
                 <span
                   className={cn(
                     "block text-[11px] sm:text-xs font-display font-bold truncate leading-tight",
-                    isCurrent && "text-[var(--accent)]",
-                    isCompleted && "text-[var(--text-primary)]",
-                    isUpcoming && "text-[var(--text-muted)]"
+                    isCurrent && "text-ink",
+                    isCompleted && "text-ink",
+                    isUpcoming && "text-muted"
                   )}
                 >
                   {step.label}
                 </span>
                 {step.sublabel && (
-                  <span className="hidden sm:block text-[9px] text-[var(--text-muted)] font-medium truncate mt-0.5">
+                  <span className="hidden sm:block text-[9px] text-muted font-medium truncate mt-0.5">
                     {step.sublabel}
                   </span>
                 )}

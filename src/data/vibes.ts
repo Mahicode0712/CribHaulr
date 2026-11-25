@@ -5,120 +5,95 @@ export type VibeId =
   | "kawaii"
   | "neon-gamer";
 
+export type VibeIconName =
+  | "lightbulb"
+  | "coffee"
+  | "flame"
+  | "book"
+  | "candle"
+  | "pencil"
+  | "gamepad"
+  | "bolt"
+  | "headphones"
+  | "notebook"
+  | "box"
+  | "heart"
+  | "star"
+  | "cloud";
+
 export interface VibeInfo {
   id: VibeId;
   name: string;
   tagline: string;
+  headline: string;
+  stickerLabel: string;
   emoji: string;
   description: string;
-  palette: {
-    bg: string;
-    card: string;
-    accent: string;
-    border: string;
-    shadow: string;
-    stickerBg: string;
-    stickerText: string;
-  };
+  iconNames: VibeIconName[];
+  boxTint: string;
   moodKeywords: string[];
-  bannerGradient: string;
 }
 
 export const VIBES: Record<VibeId, VibeInfo> = {
   cozy: {
     id: "cozy",
     name: "Cozy / Dormcore",
-    tagline: "Knitted throws, warm chai, and 1 AM lofi beats.",
+    tagline: "Warm lights, warmer room.",
+    headline: "Warm lights, warmer room.",
+    stickerLabel: "SOFT RESET",
     emoji: "🧶",
-    description:
-      "Warm oatmeal textures, terracotta warmth, fairy lights, and soothing matcha accents. Your room feels like a hug after a brutal 8 AM lecture.",
-    palette: {
-      bg: "#FAF5ED",
-      card: "#FFFFFF",
-      accent: "#D96B43",
-      border: "#2C221E",
-      shadow: "#2C221E",
-      stickerBg: "#F5E3A9",
-      stickerText: "#2C221E",
-    },
+    description: "Soft light, warm chai, and a tiny reset after that 8 AM lecture.",
+    iconNames: ["lightbulb", "coffee", "flame"],
+    boxTint: "var(--accent)",
     moodKeywords: ["Warm", "Earthy", "Soft Light", "Textured", "Relaxing"],
-    bannerGradient: "from-amber-100 via-orange-100 to-amber-200",
   },
   "dark-academia": {
     id: "dark-academia",
     name: "Dark Academia",
-    tagline: "Leather notebooks, antique brass, and midnight study obsessions.",
+    tagline: "Your desk deserves a library.",
+    headline: "Your desk deserves a library.",
+    stickerLabel: "STUDY MODE",
     emoji: "📜",
-    description:
-      "Rich espresso browns, muted gold crests, vintage paper ephemera, and candle-lit scholar energy. Ideal for nocturnal thesis writers.",
-    palette: {
-      bg: "#1A1412",
-      card: "#271F1B",
-      accent: "#C89B3C",
-      border: "#D4AF37",
-      shadow: "#0A0807",
-      stickerBg: "#D4AF37",
-      stickerText: "#1A1412",
-    },
+    description: "Leather notebooks, candlelight, and midnight study energy.",
+    iconNames: ["book", "candle", "pencil"],
+    boxTint: "var(--accent)",
     moodKeywords: ["Vintage", "Scholar", "Moody", "Brass", "Classic"],
-    bannerGradient: "from-stone-900 via-yellow-950 to-stone-900",
   },
   minimalist: {
     id: "minimalist",
     name: "Clean Minimalist",
-    tagline: "Zero clutter, monochrome precision, pure focus.",
+    tagline: "Less stuff. Better stuff.",
+    headline: "Less stuff. Better stuff.",
+    stickerLabel: "LESS, BETTER",
     emoji: "📐",
-    description:
-      "Stark clean ivory, matte slate grey, architectural gridlines, and industrial typography. No distractions, just pristine study discipline.",
-    palette: {
-      bg: "#F8F9FA",
-      card: "#FFFFFF",
-      accent: "#18181B",
-      border: "#09090B",
-      shadow: "#09090B",
-      stickerBg: "#E4E4E7",
-      stickerText: "#09090B",
-    },
+    description: "A clear desk, useful essentials, and room to think.",
+    iconNames: ["notebook", "box", "pencil"],
+    boxTint: "var(--accent)",
     moodKeywords: ["Crisp", "Monochrome", "Geometric", "Clutter-Free"],
-    bannerGradient: "from-slate-100 via-zinc-200 to-slate-100",
   },
   kawaii: {
     id: "kawaii",
     name: "Kawaii Dream",
-    tagline: "Pastel peach, strawberry milk, and dopamine decor.",
+    tagline: "Cute desk, who dis.",
+    headline: "Cute desk, who dis.",
+    stickerLabel: "CUTE MODE",
     emoji: "🌸",
-    description:
-      "Sweet pastel pink, baby lavender, bubblegum stickers, cloud pillows, and cute collectible trinkets to survive engineering stress.",
-    palette: {
-      bg: "#FFF2F5",
-      card: "#FFFFFF",
-      accent: "#FF5E8E",
-      border: "#3B202D",
-      shadow: "#3B202D",
-      stickerBg: "#FFF07C",
-      stickerText: "#3B202D",
-    },
+    description: "Cloud pillows, tiny stars, and cute desk energy for the long week.",
+    iconNames: ["heart", "star", "cloud"],
+    boxTint: "var(--accent)",
     moodKeywords: ["Pastel", "Cute", "Playful", "Strawberry Milk", "Dopamine"],
-    bannerGradient: "from-pink-100 via-rose-100 to-pink-200",
   },
   "neon-gamer": {
     id: "neon-gamer",
     name: "Neon Gamer / Cyber",
-    tagline: "Obsidian dark mode, electric cyan, and RGB victory screens.",
+    tagline: "Level up your cave.",
+    headline: "Level up your cave.",
+    stickerLabel: "GG / GO TIME",
     emoji: "⚡",
-    description:
-      "Deep obsidian night theme, electric cyan edges, acid green glow, and cable-managed cyberpunk battle station vibes.",
-    palette: {
-      bg: "#0D0F18",
-      card: "#1A1E30",
-      accent: "#00F0FF",
-      border: "#00F0FF",
-      shadow: "#030408",
-      stickerBg: "#39FF14",
-      stickerText: "#0D0F18",
-    },
+    description: "Headphones on, cables managed, ranked queue ready.",
+    iconNames: ["gamepad", "bolt", "headphones"],
+    boxTint: "var(--highlight)",
     moodKeywords: ["Cyberpunk", "RGB", "Electric", "Dark Mode", "Battlestation"],
-    bannerGradient: "from-cyan-950 via-slate-900 to-purple-950",
   },
 };
 

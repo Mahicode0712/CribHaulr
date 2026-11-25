@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Package, Sparkles, Flame, ShoppingBag, Menu, X, ArrowRight } from "lucide-react";
 import { VibeSwitcher } from "./VibeSwitcher";
-import { Button } from "@/components/ui/Button";
+import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -19,21 +19,21 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[var(--bg-primary)]/90 border-b-2 border-[var(--border-color)]">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-deep/90 border-b-width-theme border-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
         {/* Brand Logo */}
         <Link
           href="/"
           className="flex items-center gap-2 group select-none"
         >
-          <div className="w-10 h-10 rounded-2xl bg-[var(--accent)] text-[var(--accent-text)] border-2 border-[var(--border-color)] flex items-center justify-center font-display font-black text-xl shadow-[2px_2px_0px_var(--shadow-color)] group-hover:-rotate-6 transition-transform">
+          <div className="w-10 h-10 rounded-card bg-accent text-on-accent border-width-theme border-line flex items-center justify-center font-display font-black text-xl sticker-shadow group-hover:-rotate-6 transition-transform">
             📦
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-extrabold text-xl tracking-tight text-[var(--text-primary)]">
-              Crib<span className="text-[var(--accent)]">Haulr</span>
+            <span className="font-display font-extrabold text-xl tracking-tight text-ink">
+              Crib<span className="text-ink">Haulr</span>
             </span>
-            <span className="text-[10px] font-bold tracking-wider text-[var(--text-muted)] -mt-1 uppercase">
+            <span className="text-[10px] font-bold tracking-wider text-muted -mt-1 uppercase">
               Dorm Box Lab
             </span>
           </div>
@@ -49,16 +49,16 @@ export function Navbar() {
                 key={link.name}
                 href={link.href}
                 className={cn(
-                  "relative flex items-center gap-1.5 px-4 py-2 rounded-xl font-display font-bold text-sm transition-all border-2",
+                  "relative flex items-center gap-1.5 px-4 py-2 rounded-btn font-display font-bold text-sm transition-all border-width-theme",
                   isActive
-                    ? "bg-[var(--bg-card)] border-[var(--border-color)] shadow-[2px_2px_0px_var(--shadow-color)] text-[var(--accent)]"
-                    : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
+                    ? "bg-surface border-line sticker-shadow text-ink"
+                    : "border-transparent text-muted hover:text-ink hover:bg-secondary"
                 )}
               >
                 <Icon className="w-4 h-4" />
                 <span>{link.name}</span>
                 {link.badge && (
-                  <span className="ml-1 text-[10px] uppercase font-black px-1.5 py-0.2 rounded-full bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)]">
+                  <span className="ml-1 text-[10px] uppercase font-black px-1.5 py-0.2 rounded-full bg-accent text-on-accent border-width-theme border-line">
                     {link.badge}
                   </span>
                 )}
@@ -71,25 +71,32 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <VibeSwitcher />
 
-          <Link href="/checkout" className="relative hidden sm:inline-flex">
-            <Button variant="secondary" size="sm" className="gap-2">
-              <ShoppingBag className="w-4 h-4 text-[var(--accent)]" />
-              <span className="font-bold">Haul</span>
-            </Button>
-          </Link>
+          <ButtonLink
+            href="/checkout"
+            variant="secondary"
+            size="sm"
+            className="relative hidden sm:inline-flex gap-2"
+          >
+            <ShoppingBag className="w-4 h-4 text-accent" />
+            <span className="font-bold">Haul</span>
+          </ButtonLink>
 
-          <Link href="/builder" className="hidden lg:inline-flex">
-            <Button variant="primary" size="sm" className="gap-1.5">
-              <span>Start Haul</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
+          <ButtonLink
+            href="/builder"
+            variant="primary"
+            size="sm"
+            className="hidden lg:inline-flex gap-1.5"
+          >
+            <span>Start Haul</span>
+            <ArrowRight className="w-4 h-4" />
+          </ButtonLink>
 
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] shadow-[2px_2px_0px_var(--shadow-color)]"
+            className="md:hidden w-11 h-11 flex items-center justify-center rounded-btn border-width-theme border-line bg-surface text-ink sticker-shadow"
             aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -98,7 +105,7 @@ export function Navbar() {
 
       {/* Mobile Drawer Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden px-4 pt-2 pb-6 border-t-2 border-[var(--border-color)] bg-[var(--bg-card)] space-y-3 shadow-lg">
+        <div className="md:hidden px-4 pt-2 pb-6 border-t-width-theme border-line bg-surface space-y-3 shadow-lg">
           <nav className="flex flex-col gap-2 pt-2">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -109,10 +116,10 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "flex items-center justify-between px-4 py-3 rounded-2xl font-display font-bold text-base border-2",
+                    "flex items-center justify-between px-4 py-3 rounded-card font-display font-bold text-base border-width-theme",
                     isActive
-                      ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)]"
-                      : "border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)]"
+                      ? "bg-primary text-on-primary border-line sticker-shadow"
+                      : "border-line bg-secondary text-on-secondary"
                   )}
                 >
                   <div className="flex items-center gap-3">
@@ -120,7 +127,7 @@ export function Navbar() {
                     <span>{link.name}</span>
                   </div>
                   {link.badge && (
-                    <span className="text-xs uppercase font-black px-2 py-0.5 rounded-full bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)]">
+                    <span className="text-xs uppercase font-black px-2 py-0.5 rounded-full bg-accent text-on-accent border-width-theme border-line">
                       {link.badge}
                     </span>
                   )}
@@ -130,27 +137,27 @@ export function Navbar() {
           </nav>
 
           <div className="pt-2 flex flex-col gap-2">
-            <Link
+            <ButtonLink
               href="/builder"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full"
+              variant="primary"
+              size="lg"
+              className="w-full justify-between"
             >
-              <Button variant="primary" size="lg" className="w-full justify-between">
-                <span>Build Starter Box</span>
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-            </Link>
+              <span>Build Starter Box</span>
+              <ArrowRight className="w-5 h-5" />
+            </ButtonLink>
 
-            <Link
+            <ButtonLink
               href="/checkout"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full"
+              variant="secondary"
+              size="md"
+              className="w-full justify-between"
             >
-              <Button variant="secondary" size="md" className="w-full justify-between">
-                <span>View Haul / Checkout</span>
-                <ShoppingBag className="w-4 h-4" />
-              </Button>
-            </Link>
+              <span>View Haul / Checkout</span>
+              <ShoppingBag className="w-4 h-4" />
+            </ButtonLink>
           </div>
         </div>
       )}

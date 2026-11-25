@@ -1,6 +1,7 @@
-import { Product, ProductCategory, SpaceType, BudgetTier, Box } from "@/types";
-import { PRODUCTS } from "@/data/products";
-import { VIBES, VIBE_LIST, VibeId, VibeInfo } from "@/data/vibes";
+import type { Product, ProductCategory, SpaceType, BudgetTier, Box } from "../types";
+import { PRODUCTS } from "../data/products";
+import { VIBES, VIBE_LIST, type VibeId, type VibeInfo } from "../data/vibes";
+import { generateStarterBox } from "./starterBox";
 
 /**
  * CribHaulr API Abstraction Layer
@@ -25,7 +26,7 @@ export interface SeasonalDrop {
   subtitle: string;
   badge: string;
   tagline: string;
-  price: number;
+  price: 999 | 1999;
   itemCount: number;
   countdownTarget: string; // ISO timestamp
   vibe: VibeId;
@@ -53,8 +54,9 @@ export const api = {
         results = results.filter((p) => p.category === params.category);
       }
 
-      if (params.vibe && params.vibe !== "all") {
-        results = results.filter((p) => p.vibes.includes(params.vibe as VibeId));
+      const vibe = params.vibe;
+      if (vibe && vibe !== "all") {
+        results = results.filter((p) => p.vibes.includes(vibe));
       }
 
       if (params.search && params.search.trim() !== "") {
@@ -67,8 +69,9 @@ export const api = {
         );
       }
 
-      if (params.maxPrice !== undefined) {
-        results = results.filter((p) => p.price <= params.maxPrice!);
+      const maxPrice = params.maxPrice;
+      if (maxPrice !== undefined) {
+        results = results.filter((p) => p.price <= maxPrice);
       }
 
       if (params.sortBy) {
@@ -137,9 +140,8 @@ export const api = {
   starterBox: {
     /**
      * Algorithmic starter box builder:
-     * Picks 4 to 5 balanced items matching the chosen vibe,
-     * ensuring diverse categories (decor, desk, comfort, utility, fun)
-     * while respecting the selected budget tier (₹499 / ₹999 / ₹1999).
+     * Picks up to five balanced, vibe-matched items while respecting
+     * the selected budget tier (₹499 / ₹999 / ₹1999).
      */
     async generate(
       space: SpaceType,
@@ -147,73 +149,7 @@ export const api = {
       vibe: VibeId
     ): Promise<Product[]> {
       await simulateDelay(80);
-
-      // 1. Get all candidate products matching this vibe
-      const vibeCandidates = PRODUCTS.filter((p) => p.vibes.includes(vibe));
-
-      // Group candidates by category
-      const byCat: Record<ProductCategory, Product[]> = {
-        decor: [],
-        desk: [],
-        comfort: [],
-        utility: [],
-        fun: [],
-      };
-
-      for (const item of vibeCandidates) {
-        byCat[item.category].push(item);
-      }
-
-      // Sort within each category by popularity and vibeWeight descending
-      (Object.keys(byCat) as ProductCategory[]).forEach((cat) => {
-        byCat[cat].sort((a, b) => {
-          if (b.vibeWeight !== a.vibeWeight) {
-            return b.vibeWeight - a.vibeWeight;
-          }
-          return (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0);
-        });
-      });
-
-      // Targeted categories based on space
-      let targetCategories: ProductCategory[] = [];
-      if (space === "desk") {
-        targetCategories = ["desk", "decor", "utility", "fun"];
-      } else if (space === "bed") {
-        targetCategories = ["comfort", "decor", "utility", "fun"];
-      } else {
-        // full room
-        targetCategories = ["decor", "desk", "comfort", "utility", "fun"];
-      }
-
-      const selected: Product[] = [];
-      let currentTotal = 0;
-
-      // Pick top item from each target category
-      for (const cat of targetCategories) {
-        const pool = byCat[cat].filter((p) => !selected.some((s) => s.id === p.id));
-        if (pool.length > 0) {
-          // Find an item that fits well into the budget
-          let chosen = pool[0];
-          for (const item of pool) {
-            if (currentTotal + item.price <= budgetTier) {
-              chosen = item;
-              break;
-            }
-          }
-          selected.push(chosen);
-          currentTotal += chosen.price;
-        }
-      }
-
-      // If we still have budget space and fewer than 5 items, add a fun extra
-      if (selected.length < 5 && currentTotal < budgetTier) {
-        const funExtra = byCat.fun.find((p) => !selected.some((s) => s.id === p.id));
-        if (funExtra && currentTotal + funExtra.price <= budgetTier + 100) {
-          selected.push(funExtra);
-        }
-      }
-
-      return selected;
+      return generateStarterBox(PRODUCTS, space, budgetTier, vibe);
     },
   },
 
@@ -265,7 +201,9 @@ export const api = {
           vibe: "cozy",
           bannerImage: "/drops/freshers.svg",
           status: "live",
-          featuredItems: PRODUCTS.slice(0, 5),
+          featuredItems: PRODUCTS.filter((product) =>
+            ["dec-01", "dsk-09", "com-07", "utl-03", "fun-02"].includes(product.id)
+          ),
         },
         {
           id: "drop-exam",
@@ -279,7 +217,9 @@ export const api = {
           vibe: "neon-gamer",
           bannerImage: "/drops/exam.svg",
           status: "live",
-          featuredItems: PRODUCTS.filter((p) => p.vibes.includes("neon-gamer")).slice(0, 5),
+          featuredItems: PRODUCTS.filter((product) =>
+            ["dec-03", "dec-09", "dsk-03", "dsk-05", "dsk-06", "fun-05"].includes(product.id)
+          ),
         },
         {
           id: "drop-winter",

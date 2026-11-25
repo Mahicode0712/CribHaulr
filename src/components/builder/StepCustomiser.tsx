@@ -88,14 +88,14 @@ export function StepCustomiser({
         <Card className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+              <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
                 Budget Tracker ({formatINR(budgetTier)} Tier)
               </span>
               <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-2xl sm:text-3xl font-black font-display text-[var(--text-primary)]">
+                <span className="theme-price text-2xl sm:text-3xl font-black font-display">
                   {formatINR(totalPrice)}
                 </span>
-                <span className="text-xs text-[var(--text-secondary)] font-bold">
+                <span className="text-xs text-muted font-bold">
                   used of {formatINR(budgetTier)}
                 </span>
               </div>
@@ -110,20 +110,20 @@ export function StepCustomiser({
 
           {/* Progress Bar Track */}
           <div className="space-y-1.5">
-            <div className="w-full h-3 rounded-full bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] overflow-hidden p-0.5">
+            <div className="w-full h-3 rounded-full bg-deep border-width-theme border-line overflow-hidden p-0.5">
               <div
                 className={`h-full rounded-full transition-all duration-300 ${
                   isOverBudget
-                    ? "bg-rose-500"
+                    ? "bg-primary"
                     : budgetPercentage > 85
-                    ? "bg-amber-400"
-                    : "bg-emerald-500"
+                    ? "bg-accent"
+                    : "bg-primary"
                 }`}
                 style={{ width: `${budgetPercentage}%` }}
               />
             </div>
 
-            <div className="flex justify-between text-[10px] font-bold text-[var(--text-muted)]">
+            <div className="flex justify-between text-[10px] font-bold text-muted">
               <span>₹0</span>
               <span>50%</span>
               <span>Tier Max ({formatINR(budgetTier)})</span>
@@ -132,8 +132,8 @@ export function StepCustomiser({
 
           {/* Over Budget Warning Banner */}
           {isOverBudget && (
-            <div className="p-3 rounded-2xl bg-rose-500/10 border-2 border-rose-500/40 text-rose-900 flex items-center gap-2.5 text-xs font-semibold">
-              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+            <div className="p-3 rounded-card bg-primary/10 border-width-theme border-primary/40 text-ink flex items-center gap-2.5 text-xs font-semibold">
+              <AlertTriangle className="w-4 h-4 text-primary shrink-0" />
               <span>
                 You are {formatINR(vibeScore.overBudgetAmount)} over budget! A {vibeScore.budgetPenalty} pt penalty has been deducted from your Vibe Score.
               </span>
@@ -142,9 +142,9 @@ export function StepCustomiser({
         </Card>
 
         {/* Live Vibe Score Meter */}
-        <Card className="lg:col-span-5 space-y-3 bg-[var(--bg-card)]">
+        <Card className="lg:col-span-5 space-y-3 bg-surface">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+            <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
               Live Vibe Meter
             </span>
             <Sticker color="vibe" tilt="none">
@@ -154,7 +154,7 @@ export function StepCustomiser({
 
           <div className="flex items-center gap-4">
             {/* Score Radial Indicator */}
-            <div className="w-16 h-16 rounded-2xl bg-[var(--accent)] text-[var(--accent-text)] border-2 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] flex flex-col items-center justify-center shrink-0">
+            <div className="w-16 h-16 rounded-card bg-accent text-on-accent border-width-theme border-line sticker-shadow flex flex-col items-center justify-center shrink-0">
               <span className="text-xl font-black font-display leading-none">
                 {vibeScore.score}
               </span>
@@ -164,14 +164,14 @@ export function StepCustomiser({
             </div>
 
             <div className="space-y-1 flex-1">
-              <h4 className="font-display font-black text-sm text-[var(--text-primary)] leading-tight">
+              <h4 className="font-display font-black text-sm text-ink leading-tight">
                 {vibeScore.feedbackMessage}
               </h4>
               <div className="flex flex-wrap gap-1 pt-1">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[var(--bg-secondary)] border border-[var(--border-color)]/20">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-btn bg-secondary border-width-theme border-line/20">
                   ⚡ Match: {vibeScore.vibeMatchPoints}/70
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[var(--bg-secondary)] border border-[var(--border-color)]/20">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-btn bg-secondary border-width-theme border-line/20">
                   🌈 Diversity: +{vibeScore.categoryBonus}
                 </span>
               </div>
@@ -179,8 +179,8 @@ export function StepCustomiser({
           </div>
 
           {/* Category Diversity Dots */}
-          <div className="pt-2 border-t border-[var(--border-color)]/20 flex items-center justify-between text-xs">
-            <span className="text-[10px] font-bold text-[var(--text-muted)]">
+          <div className="pt-2 border-t border-line/20 flex items-center justify-between text-xs">
+            <span className="text-[10px] font-bold text-muted">
               Category Balance ({presentCategories.size}/5):
             </span>
             <div className="flex items-center gap-1.5">
@@ -190,10 +190,10 @@ export function StepCustomiser({
                   <span
                     key={cat}
                     title={`${CATEGORY_NAMES[cat].label} (${isCovered ? "Covered" : "Missing"})`}
-                    className={`w-5 h-5 rounded-md border flex items-center justify-center text-[10px] ${
+                    className={`w-5 h-5 rounded-btn border flex items-center justify-center text-[10px] ${
                       isCovered
-                        ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] font-bold"
-                        : "bg-[var(--bg-secondary)] text-[var(--text-muted)] border-[var(--border-color)]/40 opacity-40"
+                        ? "bg-accent text-on-accent border-line font-bold"
+                        : "bg-secondary text-on-secondary border-line/40 opacity-40"
                     }`}
                   >
                     {CATEGORY_NAMES[cat].emoji}
@@ -209,10 +209,10 @@ export function StepCustomiser({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-xl font-black font-display text-[var(--text-primary)]">
+            <h3 className="text-xl font-black font-display text-ink">
               Items in Your Box ({items.length})
             </h3>
-            <p className="text-xs text-[var(--text-secondary)] font-medium">
+            <p className="text-xs text-muted font-medium">
               Swap any product with certified aesthetic alternatives or remove items you don&apos;t want.
             </p>
           </div>
@@ -223,16 +223,16 @@ export function StepCustomiser({
             onClick={() => setIsAddModalOpen(true)}
             className="gap-1.5"
           >
-            <Plus className="w-4 h-4 text-[var(--accent)]" />
+            <Plus className="w-4 h-4 text-accent" />
             <span>Add Extra Item</span>
           </Button>
         </div>
 
         {items.length === 0 ? (
-          <div className="text-center py-12 border-2 border-dashed border-[var(--border-color)]/50 rounded-3xl p-6 space-y-3">
+          <div className="text-center py-12 border-width-theme border-dashed border-line/50 rounded-card p-6 space-y-3">
             <span className="text-4xl">📦</span>
             <h4 className="font-display font-bold text-base">Your box is currently empty</h4>
-            <p className="text-xs text-[var(--text-muted)]">
+            <p className="text-xs text-muted">
               Add at least 3-4 items to unlock your live Vibe Score and preview the scene.
             </p>
             <Button
@@ -251,10 +251,10 @@ export function StepCustomiser({
               return (
                 <div
                   key={item.id}
-                  className="p-4 rounded-3xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] shadow-[3px_3px_0px_var(--shadow-color)] flex gap-4 items-center justify-between"
+                  className="p-4 rounded-card border-width-theme border-line bg-surface sticker-shadow flex gap-4 items-center justify-between"
                 >
                   <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-18 h-18 rounded-2xl overflow-hidden border-2 border-[var(--border-color)] shrink-0">
+                    <div className="w-18 h-18 rounded-card overflow-hidden border-width-theme border-line shrink-0">
                       <ProductImage
                         category={item.category}
                         name={item.name}
@@ -264,25 +264,25 @@ export function StepCustomiser({
 
                     <div className="min-w-0 space-y-1">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-black uppercase tracking-wider text-[var(--accent)]">
+                        <span className="text-[9px] font-black uppercase tracking-wider text-ink">
                           {CATEGORY_NAMES[item.category].emoji} {CATEGORY_NAMES[item.category].label}
                         </span>
                         {matchesVibe ? (
-                          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.2 rounded-md">
+                          <span className="text-on-secondary bg-secondary px-1.5 py-0.2 rounded-btn">
                             Matches Vibe
                           </span>
                         ) : (
-                          <span className="text-[9px] font-bold text-amber-600 bg-amber-100 px-1.5 py-0.2 rounded-md">
+                          <span className="text-ink bg-accent/20 px-1.5 py-0.2 rounded-btn">
                             Cross-Vibe
                           </span>
                         )}
                       </div>
 
-                      <h4 className="font-display font-bold text-sm text-[var(--text-primary)] truncate">
+                      <h4 className="font-display font-bold text-sm text-ink truncate">
                         {item.name}
                       </h4>
 
-                      <div className="text-sm font-black font-display text-[var(--text-primary)]">
+                      <div className="theme-price text-sm font-black font-display">
                         {formatINR(item.price)}
                       </div>
                     </div>
@@ -328,7 +328,7 @@ export function StepCustomiser({
       >
         <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
           {swapCandidates.length === 0 ? (
-            <div className="text-center py-8 text-xs text-[var(--text-muted)]">
+            <div className="text-center py-8 text-xs text-muted">
               No direct alternatives available in this category. You can add items from the catalog instead!
             </div>
           ) : (
@@ -346,10 +346,10 @@ export function StepCustomiser({
                         setSwapTargetItem(null);
                       }
                     }}
-                    className="p-3.5 rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-card)] transition-all cursor-pointer flex flex-col justify-between shadow-[2px_2px_0px_var(--shadow-color)] hover:-translate-y-0.5"
+                    className="p-3.5 rounded-card border-width-theme border-line bg-secondary hover:bg-surface transition-all cursor-pointer flex flex-col justify-between sticker-shadow hover:-translate-y-0.5"
                   >
                     <div className="flex gap-3">
-                      <div className="w-14 h-14 rounded-xl border border-[var(--border-color)] overflow-hidden shrink-0">
+                      <div className="w-14 h-14 rounded-btn border-width-theme border-line overflow-hidden shrink-0">
                         <ProductImage
                           category={cand.category}
                           name={cand.name}
@@ -357,20 +357,20 @@ export function StepCustomiser({
                         />
                       </div>
                       <div className="min-w-0">
-                        <h5 className="font-display font-bold text-xs text-[var(--text-primary)] line-clamp-2">
+                        <h5 className="font-display font-bold text-xs text-ink line-clamp-2">
                           {cand.name}
                         </h5>
                         <div className="flex items-center gap-1.5 mt-1">
-                          <span className="text-xs font-black">
+                          <span className="theme-price text-xs font-black">
                             {formatINR(cand.price)}
                           </span>
                           <span
-                            className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                            className={`text-[10px] font-bold px-1.5 py-0.2 rounded-btn ${
                               priceDiff > 0
-                                ? "text-amber-800 bg-amber-200"
+                                ? "text-ink bg-accent/30"
                                 : priceDiff < 0
-                                ? "text-emerald-800 bg-emerald-200"
-                                : "text-zinc-600 bg-zinc-200"
+                                ? "text-on-secondary bg-secondary"
+                                : "text-muted bg-surface"
                             }`}
                           >
                             {priceDiff > 0
@@ -383,11 +383,11 @@ export function StepCustomiser({
                       </div>
                     </div>
 
-                    <div className="mt-3 pt-2 border-t border-[var(--border-color)]/20 flex items-center justify-between">
-                      <span className="text-[9px] font-bold text-[var(--text-muted)]">
+                    <div className="mt-3 pt-2 border-t border-line/20 flex items-center justify-between">
+                      <span className="text-[9px] font-bold text-muted">
                         {matchesVibe ? "✨ Vibe Match" : "Standard"}
                       </span>
-                      <span className="text-xs font-black text-[var(--accent)]">
+                      <span className="text-xs font-black text-ink">
                         Select Swap &rarr;
                       </span>
                     </div>
@@ -412,10 +412,10 @@ export function StepCustomiser({
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             <button
               onClick={() => setAddCategoryFilter("all")}
-              className={`px-3 py-1.5 rounded-xl font-display font-bold text-xs border ${
+              className={`px-3 py-1.5 rounded-btn font-display font-bold text-xs border ${
                 addCategoryFilter === "all"
-                  ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)]"
-                  : "bg-[var(--bg-secondary)] border-[var(--border-color)]/40"
+                  ? "bg-primary text-on-primary border-line"
+                  : "bg-secondary border-line/40"
               }`}
             >
               All
@@ -424,10 +424,10 @@ export function StepCustomiser({
               <button
                 key={cat}
                 onClick={() => setAddCategoryFilter(cat)}
-                className={`px-3 py-1.5 rounded-xl font-display font-bold text-xs border whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-btn font-display font-bold text-xs border whitespace-nowrap ${
                   addCategoryFilter === cat
-                    ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)]"
-                    : "bg-[var(--bg-secondary)] border-[var(--border-color)]/40"
+                    ? "bg-primary text-on-primary border-line"
+                    : "bg-secondary border-line/40"
                 }`}
               >
                 {CATEGORY_NAMES[cat].emoji} {CATEGORY_NAMES[cat].label}
@@ -443,20 +443,20 @@ export function StepCustomiser({
               return (
                 <div
                   key={p.id}
-                  className="p-3 rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] flex flex-col justify-between shadow-[2px_2px_0px_var(--shadow-color)]"
+                  className="p-3 rounded-card border-width-theme border-line bg-surface flex flex-col justify-between sticker-shadow"
                 >
                   <div className="space-y-2">
-                    <div className="h-28 rounded-xl border border-[var(--border-color)] overflow-hidden">
+                    <div className="h-28 rounded-btn border-width-theme border-line overflow-hidden">
                       <ProductImage category={p.category} name={p.name} sprite={p.sprite} />
                     </div>
 
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] font-black uppercase text-[var(--accent)]">
+                        <span className="text-[9px] font-black uppercase text-ink">
                           {CATEGORY_NAMES[p.category].label}
                         </span>
                         {matchesVibe && (
-                          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-1 py-0.2 rounded">
+                          <span className="text-[9px] font-bold text-on-secondary bg-secondary px-1 py-0.2 rounded">
                             ✨ Vibe
                           </span>
                         )}
@@ -467,8 +467,8 @@ export function StepCustomiser({
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-[var(--border-color)]/20 flex items-center justify-between">
-                    <span className="text-sm font-black font-display">
+                  <div className="mt-3 pt-2 border-t border-line/20 flex items-center justify-between">
+                    <span className="theme-price text-sm font-black font-display">
                       {formatINR(p.price)}
                     </span>
                     <Button

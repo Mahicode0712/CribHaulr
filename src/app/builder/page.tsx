@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Sparkles, ShoppingBag, Eye, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Sparkles, ShoppingBag } from "lucide-react";
 import { Stepper } from "@/components/ui/Stepper";
-import { Button } from "@/components/ui/Button";
-import { Sticker } from "@/components/ui/Sticker";
-import { Badge } from "@/components/ui/Badge";
+import { Button, ButtonLink } from "@/components/ui/Button";
 import { StepSpaceBudget } from "@/components/builder/StepSpaceBudget";
 import { StepVibePicker } from "@/components/builder/StepVibePicker";
 import { StepStarterBox } from "@/components/builder/StepStarterBox";
 import { StepCustomiser } from "@/components/builder/StepCustomiser";
 import { LiveRoomScene } from "@/components/preview/LiveRoomScene";
-import { useHaulStore } from "@/lib/store";
+import { hydrateHaulStore, useHaulStore } from "@/lib/store";
 import { useTheme } from "@/context/ThemeContext";
 import { formatINR } from "@/lib/utils";
+import { PRODUCTS } from "@/data/products";
+import { VIBE_LIST } from "@/data/vibes";
+import type { BudgetTier, SpaceType } from "@/types";
 
 const BUILDER_STEPS = [
   { id: "space-budget", label: "Space & Budget", sublabel: "Desk / Bed & Tier" },
@@ -25,7 +26,8 @@ const BUILDER_STEPS = [
 ];
 
 export default function BuilderPage() {
-  const { currentVibe, setVibe } = useTheme();
+  const { setVibe } = useTheme();
+  const hasAppliedSharedBox = useRef(false);
   const {
     space,
     budgetTier,
@@ -34,8 +36,8 @@ export default function BuilderPage() {
     builderStep,
     setSpace,
     setBudgetTier,
-    setVibe: setStoreVibe,
     setBuilderStep,
+    replaceItems,
     addItem,
     removeItem,
     swapItem,
@@ -45,53 +47,106 @@ export default function BuilderPage() {
   } = useHaulStore();
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
 
-  // Sync theme context with store vibe
+  useEffect(() => {
+    if (hasAppliedSharedBox.current) return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has("items")) return;
+
+    let active = true;
+    void hydrateHaulStore().then(() => {
+      if (!active || hasAppliedSharedBox.current) return;
+      hasAppliedSharedBox.current = true;
+
+      const sharedSpace = params.get("space");
+      const sharedTier = Number(params.get("tier"));
+      const sharedVibe = params.get("vibe");
+      const validSpace: SpaceType | undefined =
+        sharedSpace === "desk" || sharedSpace === "bed" || sharedSpace === "room"
+          ? sharedSpace
+          : undefined;
+      const validTier: BudgetTier | undefined =
+        sharedTier === 499 || sharedTier === 999 || sharedTier === 1999
+          ? sharedTier
+          : undefined;
+      const validVibe = VIBE_LIST.find(
+        (candidate) => candidate.id === sharedVibe
+      )?.id;
+      const sharedItems = (params.get("items") ?? "")
+        .split(",")
+        .map((id) => PRODUCTS.find((product) => product.id === id))
+        .filter((product) => product !== undefined);
+
+      if (validSpace) setSpace(validSpace);
+      if (validTier) setBudgetTier(validTier);
+      if (validVibe) {
+        setVibe(validVibe);
+      }
+      replaceItems(sharedItems);
+      setBuilderStep(3);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [
+    replaceItems,
+    setBuilderStep,
+    setBudgetTier,
+    setSpace,
+    setVibe,
+  ]);
+
   const handleSelectVibe = (newVibe: typeof vibe) => {
-    setStoreVibe(newVibe);
     setVibe(newVibe);
   };
 
-  // Generate starter box when advancing to starter box step if items are empty
-  const handleAdvanceToStarterBox = async () => {
+  const generateStarter = async () => {
     setIsGenerating(true);
-    setBuilderStep(2);
-    if (items.length === 0) {
+    setGenerationError(null);
+    try {
       await generateStarterBox();
+    } catch (cause) {
+      setGenerationError(
+        cause instanceof Error
+          ? cause.message
+          : "The starter haul could not be generated."
+      );
+    } finally {
+      setIsGenerating(false);
     }
-    setIsGenerating(false);
   };
 
-  const handleRegenerate = async () => {
-    setIsGenerating(true);
-    await generateStarterBox();
-    setIsGenerating(false);
+  const handleAdvanceToStarterBox = async () => {
+    setBuilderStep(2);
+    await generateStarter();
   };
 
   const totalPrice = getTotalPrice();
   const vibeScore = getVibeScore();
-  const isOverBudget = totalPrice > budgetTier;
 
   return (
     <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 pb-32">
       {/* Top Breadcrumb & Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[var(--border-color)]/30 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-width-theme border-line/30 pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Link
               href="/"
-              className="text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1"
+              className="text-xs font-bold text-muted hover:text-ink flex items-center gap-1"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back Home</span>
             </Link>
-            <span className="text-[var(--text-muted)]">•</span>
-            <span className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider">
+            <span className="text-muted">•</span>
+            <span className="text-xs font-bold text-ink uppercase tracking-wider">
               Haul Architect v1.0
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-black font-display text-[var(--text-primary)] tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-black font-display text-ink tracking-tight">
             Build-Your-Own Hostel Haul
           </h1>
         </div>
@@ -99,20 +154,20 @@ export default function BuilderPage() {
         {/* Live Mini Score Badge */}
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+            <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
               Live Total
             </span>
             <div className="flex items-center gap-1.5">
-              <span className="text-base font-black font-display text-[var(--text-primary)]">
+              <span className="text-base font-black font-display text-ink">
                 {formatINR(totalPrice)}
               </span>
-              <span className="text-xs text-[var(--text-muted)]">
+              <span className="text-xs text-muted">
                 / {formatINR(budgetTier)}
               </span>
             </div>
           </div>
 
-          <div className="px-3.5 py-1.5 rounded-2xl bg-[var(--sticker-bg)] text-[var(--sticker-text)] border-2 border-[var(--border-color)] shadow-[2px_2px_0px_var(--shadow-color)] flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-card bg-accent text-on-accent border-width-theme border-line sticker-shadow flex items-center gap-2">
             <span className="text-base">✨</span>
             <div>
               <span className="text-[9px] font-black uppercase tracking-wider block leading-none">
@@ -127,7 +182,7 @@ export default function BuilderPage() {
       </div>
 
       {/* Stepper Navigation */}
-      <div className="bg-[var(--bg-card)] border-2 border-[var(--border-color)] rounded-3xl p-4 sm:p-6 shadow-[4px_4px_0px_var(--shadow-color)]">
+      <div className="bg-surface border-width-theme border-line rounded-card p-4 sm:p-6 sticker-shadow">
         <Stepper
           steps={BUILDER_STEPS}
           currentStepIndex={builderStep}
@@ -157,12 +212,12 @@ export default function BuilderPage() {
           <StepStarterBox
             items={items}
             vibe={vibe}
-            space={space}
             budgetTier={budgetTier}
             totalPrice={totalPrice}
             vibeScore={vibeScore}
             isGenerating={isGenerating}
-            onRegenerate={handleRegenerate}
+            generationError={generationError}
+            onRegenerate={generateStarter}
             onProceed={() => setBuilderStep(3)}
           />
         )}
@@ -182,30 +237,26 @@ export default function BuilderPage() {
 
         {builderStep === 4 && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[var(--border-color)]/30 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-width-theme border-line/30 pb-4">
               <div>
-                <h2 className="text-xl sm:text-2xl font-black font-display text-[var(--text-primary)]">
+                <h2 className="text-xl sm:text-2xl font-black font-display text-ink">
                   Step 5: Live Scene & Box Preview
                 </h2>
-                <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium">
+                <p className="text-xs sm:text-sm text-muted font-medium">
                   Toggle between the mock {space.toUpperCase()} scene and the 3D packing box.
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
-                <Link href="/share">
-                  <Button variant="secondary" size="sm" className="gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
-                    <span>Story Card</span>
-                  </Button>
-                </Link>
+                <ButtonLink href="/share" variant="secondary" size="sm" className="gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-accent" />
+                  <span>Story Card</span>
+                </ButtonLink>
 
-                <Link href="/checkout">
-                  <Button variant="primary" size="sm" className="gap-1.5">
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                    <span>Checkout</span>
-                  </Button>
-                </Link>
+                <ButtonLink href="/checkout" variant="primary" size="sm" className="gap-1.5">
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>Checkout</span>
+                </ButtonLink>
               </div>
             </div>
 
@@ -223,7 +274,7 @@ export default function BuilderPage() {
       </div>
 
       {/* Navigation Footer Controls */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md bg-[var(--bg-primary)]/90 border-t-2 border-[var(--border-color)] p-4 sm:p-5">
+      <div className="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md bg-bg/90 border-t-width-theme border-line p-4 sm:p-5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <Button
             variant="outline"
@@ -238,10 +289,10 @@ export default function BuilderPage() {
 
           {/* Center Summary Indicator */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold font-display text-[var(--text-secondary)]">
+            <span className="text-xs font-bold font-display text-muted">
               Step {builderStep + 1} of {BUILDER_STEPS.length}
             </span>
-            <span className="text-xs font-black text-[var(--accent)]">
+            <span className="text-xs font-black text-ink">
               • {formatINR(totalPrice)}
             </span>
           </div>
@@ -263,6 +314,7 @@ export default function BuilderPage() {
             <Button
               variant="primary"
               size="md"
+              disabled={isGenerating}
               onClick={handleAdvanceToStarterBox}
               className="gap-2"
             >
@@ -297,12 +349,10 @@ export default function BuilderPage() {
           )}
 
           {builderStep === 4 && (
-            <Link href="/checkout">
-              <Button variant="primary" size="md" className="gap-2">
-                <span>Checkout Now</span>
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
+            <ButtonLink href="/checkout" variant="primary" size="md" className="gap-2">
+              <span>Checkout Now</span>
+              <ArrowRight className="w-4 h-4" />
+            </ButtonLink>
           )}
         </div>
       </div>

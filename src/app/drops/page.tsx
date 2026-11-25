@@ -1,17 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Flame,
   Clock,
-  Sparkles,
   ArrowRight,
-  ShieldAlert,
   Bell,
   Check,
-  Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -52,8 +47,8 @@ function CountdownTimer({ targetIso }: { targetIso: string }) {
   const pad = (num: number) => String(num).padStart(2, "0");
 
   return (
-    <div className="flex items-center gap-1.5 font-mono font-black text-sm text-[var(--accent)] bg-[var(--bg-card)] border-2 border-[var(--border-color)] px-3 py-1.5 rounded-xl shadow-[2px_2px_0px_var(--shadow-color)]">
-      <Clock className="w-4 h-4 text-[var(--accent)] shrink-0" />
+    <div className="flex items-center gap-1.5 font-body font-black text-sm text-ink bg-surface border-width-theme border-line px-3 py-1.5 rounded-btn sticker-shadow">
+      <Clock className="w-4 h-4 text-accent shrink-0" />
       <span>{pad(timeLeft.hours)}h</span>
       <span>:</span>
       <span>{pad(timeLeft.minutes)}m</span>
@@ -66,25 +61,50 @@ function CountdownTimer({ targetIso }: { targetIso: string }) {
 export default function DropsPage() {
   const router = useRouter();
   const { setVibe } = useTheme();
-  const { clearBox, addItem, setBudgetTier, setVibe: setStoreVibe } = useHaulStore();
+  const {
+    clearBox,
+    addItem,
+    setBudgetTier,
+    setBuilderStep,
+  } = useHaulStore();
 
   const [drops, setDrops] = useState<SeasonalDrop[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
   const [notifiedDrops, setNotifiedDrops] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    api.drops.list().then((data) => {
-      setDrops(data);
-      setIsLoading(false);
-    });
-  }, []);
+    let active = true;
+    api.drops
+      .list()
+      .then((data) => {
+        if (active) setDrops(data);
+      })
+      .catch((cause: unknown) => {
+        if (active) {
+          setLoadError(
+            cause instanceof Error
+              ? cause.message
+              : "Seasonal drops could not be loaded."
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [reloadToken]);
 
   const handleClaimDrop = (drop: SeasonalDrop) => {
     clearBox();
     drop.featuredItems.forEach((item) => addItem(item));
-    setBudgetTier(drop.price as 999 | 1999);
-    setStoreVibe(drop.vibe);
+    setBudgetTier(drop.price);
     setVibe(drop.vibe);
+    setBuilderStep(3);
     router.push("/builder");
   };
 
@@ -98,13 +118,13 @@ export default function DropsPage() {
   return (
     <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-10 pb-32">
       {/* Ticker Tape */}
-      <div className="w-full bg-[var(--sticker-bg)] text-[var(--sticker-text)] border-2 border-[var(--border-color)] rounded-2xl py-2 px-4 shadow-[3px_3px_0px_var(--shadow-color)] overflow-hidden">
-        <div className="flex items-center justify-between gap-4 text-xs font-mono font-black uppercase tracking-wider overflow-x-auto whitespace-nowrap scrollbar-none">
+      <div className="w-full bg-primary text-on-primary border-width-theme border-line rounded-card py-2 px-4 sticker-shadow overflow-hidden">
+        <div className="flex items-center justify-between gap-4 text-xs font-body font-black uppercase tracking-wider overflow-x-auto whitespace-nowrap scrollbar-none">
           <span>⚡ LIMITED CAMPUS BATCH #04</span>
           <span>•</span>
           <span>🔥 FRESHERS&apos; RESTOCK LIVE</span>
           <span>•</span>
-          <span>🚀 SHIPS IN 24H TO DORM RECEPTION</span>
+          <span>🚀 CAMPUS DELIVERY PREVIEW</span>
           <span>•</span>
           <span>📦 FREE STICKER SHEET WITH EVERY DROP</span>
         </div>
@@ -119,11 +139,11 @@ export default function DropsPage() {
           <Badge variant="accent">Limited Run</Badge>
         </div>
 
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black font-display text-[var(--text-primary)] tracking-tight leading-tight">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-black font-display text-ink tracking-tight leading-tight">
           Seasonal Hostel Drops
         </h1>
 
-        <p className="text-sm sm:text-base text-[var(--text-secondary)] font-medium max-w-xl mx-auto">
+        <p className="text-sm sm:text-base text-muted font-medium max-w-xl mx-auto">
           Ultra-specific survival bundles engineered for exam weeks, freshers&apos; orientation, and North Indian winters. Locked prices, zero fluff.
         </p>
       </div>
@@ -134,9 +154,26 @@ export default function DropsPage() {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-96 rounded-3xl border-2 border-[var(--border-color)]/30 bg-[var(--bg-secondary)] animate-pulse"
+              className="h-96 rounded-card border-width-theme border-line/30 bg-secondary animate-pulse"
             />
           ))}
+        </div>
+      ) : loadError ? (
+        <div className="rounded-card border-width-theme border-line bg-surface p-8 text-center sticker-shadow">
+          <p role="alert" className="font-bold text-ink">
+            {loadError}
+          </p>
+          <Button
+            variant="primary"
+            className="mt-4"
+            onClick={() => {
+              setIsLoading(true);
+              setLoadError(null);
+              setReloadToken((token) => token + 1);
+            }}
+          >
+            Try again
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -153,7 +190,7 @@ export default function DropsPage() {
                 {/* Header: Badge & Countdown */}
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-xl bg-[var(--accent)] text-[var(--accent-text)] border-2 border-[var(--border-color)] shadow-[2px_2px_0px_var(--shadow-color)]">
+                    <span className="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-btn bg-accent text-on-accent border-width-theme border-line sticker-shadow">
                       {drop.badge}
                     </span>
 
@@ -165,24 +202,24 @@ export default function DropsPage() {
                   </div>
 
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
                       {drop.subtitle}
                     </span>
-                    <h2 className="text-2xl font-black font-display text-[var(--text-primary)] leading-tight mt-0.5">
+                    <h2 className="text-2xl font-black font-display text-ink leading-tight mt-0.5">
                       {drop.title}
                     </h2>
                   </div>
 
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <p className="text-xs text-muted leading-relaxed">
                     {drop.tagline}
                   </p>
                 </div>
 
                 {/* Featured Products Included Preview */}
-                <div className="space-y-2.5 bg-[var(--bg-secondary)]/60 rounded-2xl p-3 border-2 border-[var(--border-color)]">
+                <div className="space-y-2.5 bg-secondary/60 rounded-card p-3 border-width-theme border-line">
                   <div className="flex items-center justify-between text-[11px] font-bold font-display">
                     <span>What&apos;s Packed Inside:</span>
-                    <span className="text-[var(--accent)]">
+                    <span className="text-ink">
                       {drop.itemCount} Full-Sized Essentials
                     </span>
                   </div>
@@ -192,7 +229,7 @@ export default function DropsPage() {
                       <div
                         key={item.id}
                         title={`${item.name} (${formatINR(item.price)})`}
-                        className="aspect-square rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] overflow-hidden shadow-xs"
+                        className="aspect-square rounded-btn border-width-theme border-line bg-surface overflow-hidden shadow-xs"
                       >
                         <ProductImage
                           category={item.category}
@@ -205,18 +242,18 @@ export default function DropsPage() {
                 </div>
 
                 {/* Pricing & Claim Button */}
-                <div className="pt-2 border-t border-[var(--border-color)]/20 space-y-3">
+                <div className="pt-2 border-t border-line/20 space-y-3">
                   <div className="flex items-baseline justify-between">
                     <div>
-                      <span className="text-[10px] font-bold text-[var(--text-muted)] block">
+                      <span className="text-[10px] font-bold text-muted block">
                         DROP BUNDLE PRICE
                       </span>
-                      <span className="text-3xl font-black font-display text-[var(--text-primary)]">
+                      <span className="theme-price text-3xl font-black font-display">
                         {formatINR(drop.price)}
                       </span>
                     </div>
 
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)]">
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-btn bg-accent text-on-accent border-width-theme border-line">
                       #{drop.vibe}
                     </span>
                   </div>
@@ -226,7 +263,7 @@ export default function DropsPage() {
                       size="lg"
                       variant="primary"
                       onClick={() => handleClaimDrop(drop)}
-                      className="w-full gap-2 font-black justify-center shadow-[3px_3px_0px_var(--shadow-color)]"
+                      className="w-full gap-2 font-black justify-center sticker-shadow"
                     >
                       <span>Claim This Haul Box</span>
                       <ArrowRight className="w-4 h-4" />
@@ -240,7 +277,7 @@ export default function DropsPage() {
                     >
                       {isNotified ? (
                         <>
-                          <Check className="w-4 h-4 text-emerald-600" />
+                          <Check className="w-4 h-4 text-primary" />
                           <span>Notification Set!</span>
                         </>
                       ) : (

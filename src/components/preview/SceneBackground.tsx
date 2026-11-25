@@ -10,11 +10,8 @@ interface SceneBackgroundProps {
 }
 
 export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
-  // Common theme color palettes for background scene
-  const isDark = vibe === "dark-academia" || vibe === "neon-gamer";
-
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none select-none overflow-hidden rounded-3xl">
+    <div data-vibe={vibe} className="absolute inset-0 w-full h-full pointer-events-none select-none overflow-hidden rounded-card">
       {space === "desk" && (
         <svg
           viewBox="0 0 1000 650"
@@ -30,7 +27,7 @@ export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
               width="230"
               height="200"
               rx="8"
-              fill={isDark ? "#0A0D18" : "#E2EEF8"}
+              fill="var(--bg)"
               stroke="var(--border-color)"
               strokeWidth="4"
             />
@@ -42,8 +39,8 @@ export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
               cx="170"
               cy="60"
               r="24"
-              fill={isDark ? "#FFF07C" : "#FFC837"}
-              opacity={isDark ? "0.85" : "0.9"}
+              fill="var(--accent)"
+              opacity="0.9"
             />
             {/* Window Sill */}
             <rect x="-10" y="200" width="250" height="12" rx="3" fill="var(--bg-card)" stroke="var(--border-color)" strokeWidth="3" />
@@ -63,7 +60,7 @@ export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
           />
           {/* Memo notes pinned on board */}
           <rect x="100" y="80" width="45" height="50" rx="3" fill="var(--sticker-bg)" transform="rotate(-4 100 80)" stroke="var(--border-color)" strokeWidth="1.5" />
-          <rect x="160" y="85" width="45" height="45" rx="3" fill="var(--accent-soft, #FFDDE7)" transform="rotate(3 160 85)" stroke="var(--border-color)" strokeWidth="1.5" />
+          <rect x="160" y="85" width="45" height="45" rx="3" fill="var(--secondary)" transform="rotate(3 160 85)" stroke="var(--border-color)" strokeWidth="1.5" />
           <rect x="220" y="90" width="55" height="40" rx="3" fill="var(--bg-secondary)" transform="rotate(-2 220 90)" stroke="var(--border-color)" strokeWidth="1.5" />
 
           {/* Wall Molding Line */}
@@ -173,7 +170,7 @@ export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
           <line x1="500" y1="80" x2="500" y2="450" stroke="var(--border-color)" strokeWidth="3" />
 
           {/* Left Wall Window */}
-          <polygon points="80,110 320,140 320,290 80,260" fill={isDark ? "#0D111E" : "#D4E8F8"} stroke="var(--border-color)" strokeWidth="3" />
+          <polygon points="80,110 320,140 320,290 80,260" fill="var(--bg)" stroke="var(--border-color)" strokeWidth="3" />
           <line x1="200" y1="125" x2="200" y2="275" stroke="var(--border-color)" strokeWidth="2" />
 
           {/* Right Wall Poster */}
@@ -187,7 +184,7 @@ export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
           <polygon points="660,360 980,380 950,540 630,510" fill="var(--bg-card)" stroke="var(--border-color)" strokeWidth="3" />
 
           {/* Big Circular Room Rug in Center */}
-          <ellipse cx="500" cy="530" rx="190" ry="60" fill="var(--accent-soft, #FCE8E0)" stroke="var(--border-color)" strokeWidth="3" />
+          <ellipse cx="500" cy="530" rx="190" ry="60" fill="var(--secondary)" stroke="var(--border-color)" strokeWidth="3" />
         </svg>
       )}
 
@@ -196,13 +193,7 @@ export function SceneBackground({ space, vibe }: SceneBackgroundProps) {
         className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-30 transition-colors duration-500"
         style={{
           background:
-            vibe === "neon-gamer"
-              ? "radial-gradient(circle at 70% 30%, #00F0FF 0%, transparent 60%)"
-              : vibe === "kawaii"
-              ? "radial-gradient(circle at 30% 30%, #FFB7D5 0%, transparent 60%)"
-              : vibe === "dark-academia"
-              ? "radial-gradient(circle at 50% 50%, #C89B3C 0%, #0A0807 80%)"
-              : "radial-gradient(circle at 50% 20%, #F5E3A9 0%, transparent 70%)",
+            "radial-gradient(circle at 70% 30%, color-mix(in srgb, var(--accent) 30%, transparent) 0%, transparent 60%)",
         }}
       />
     </div>

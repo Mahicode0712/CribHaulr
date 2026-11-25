@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Check, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
 import { Sticker } from "@/components/ui/Sticker";
-import { VibeId, VIBE_LIST } from "@/data/vibes";
+import { VIBE_LIST, type VibeId } from "@/data/vibes";
 
 interface StepVibePickerProps {
   selectedVibe: VibeId;
@@ -18,15 +18,15 @@ export function StepVibePicker({
     <div className="space-y-6 animate-in fade-in duration-200">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black font-display text-[var(--text-primary)]">
-            Step 3: Pick Your Aesthetic Vibe
+          <h2 className="text-xl sm:text-2xl font-black font-display text-ink">
+            Step 2: Pick Your Aesthetic Vibe
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium">
+          <p className="text-xs sm:text-sm text-muted font-medium">
             Tap a card to preview how your entire box & room will transform.
           </p>
         </div>
         <Sticker color="vibe" tilt="right">
-          🎨 STEP 2 / 4
+          🎨 STEP 2 / 5
         </Sticker>
       </div>
 
@@ -35,28 +35,31 @@ export function StepVibePicker({
           const isSelected = selectedVibe === vibe.id;
 
           return (
-            <div
+            <button
+              type="button"
+              aria-pressed={isSelected}
+              data-vibe={vibe.id}
               key={vibe.id}
               onClick={() => onSelectVibe(vibe.id)}
-              className={`p-6 rounded-3xl border-2 transition-all cursor-pointer relative flex flex-col justify-between overflow-hidden group ${
+              className={`vibe-picker-card p-6 rounded-card border-width-theme transition-all cursor-pointer relative flex flex-col justify-between overflow-hidden group text-left ${
                 isSelected
-                  ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] shadow-[6px_6px_0px_var(--shadow-color)] -translate-y-1"
-                  : "bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_var(--shadow-color)]"
+                  ? "bg-primary text-on-primary border-line sticker-shadow -translate-y-1"
+                  : "bg-bg text-ink border-line sticker-shadow hover:-translate-y-0.5 hover:sticker-shadow"
               }`}
             >
               <div>
                 <div className="flex items-start justify-between">
-                  <span className="text-4xl p-2.5 rounded-2xl bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] shadow-[2px_2px_0px_var(--shadow-color)]">
+                  <span className="text-4xl p-2.5 rounded-card bg-secondary text-on-secondary border-width-theme border-line sticker-shadow">
                     {vibe.emoji}
                   </span>
 
                   {isSelected ? (
-                    <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[var(--bg-card)] text-[var(--text-primary)] border-2 border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)] flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
+                    <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-surface text-ink border-width-theme border-line sticker-shadow flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5 text-primary stroke-[3]" />
                       <span>Active Vibe</span>
                     </span>
                   ) : (
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-color)]/30">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-btn bg-secondary text-on-secondary border-width-theme border-line/30">
                       Tap to Apply
                     </span>
                   )}
@@ -68,14 +71,14 @@ export function StepVibePicker({
                   </h3>
                   <p
                     className={`text-xs font-bold mt-1 ${
-                      isSelected ? "text-[var(--accent-text)]/90" : "text-[var(--accent)]"
+                    isSelected ? "text-on-primary" : "text-ink"
                     }`}
                   >
                     {vibe.tagline}
                   </p>
                   <p
                     className={`text-xs mt-2 leading-relaxed ${
-                      isSelected ? "text-[var(--accent-text)]/90" : "text-[var(--text-secondary)]"
+                      isSelected ? "text-on-primary" : "text-muted"
                     }`}
                   >
                     {vibe.description}
@@ -87,10 +90,10 @@ export function StepVibePicker({
                   {vibe.moodKeywords.map((tag) => (
                     <span
                       key={tag}
-                      className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md border ${
+                      className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-btn border ${
                         isSelected
-                          ? "bg-[var(--bg-card)]/20 text-[var(--accent-text)] border-current/30"
-                          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] border-[var(--border-color)]/30"
+                          ? "bg-surface text-ink border-current/30"
+                          : "bg-secondary text-on-secondary border-line/30"
                       }`}
                     >
                       #{tag}
@@ -105,24 +108,12 @@ export function StepVibePicker({
                   Palette Swatch:
                 </span>
                 <div className="flex items-center gap-1.5">
-                  <span
-                    className="w-4 h-4 rounded-full border border-black shadow-xs inline-block"
-                    style={{ backgroundColor: vibe.palette.bg }}
-                    title="Background"
-                  />
-                  <span
-                    className="w-4 h-4 rounded-full border border-black shadow-xs inline-block"
-                    style={{ backgroundColor: vibe.palette.accent }}
-                    title="Accent"
-                  />
-                  <span
-                    className="w-4 h-4 rounded-full border border-black shadow-xs inline-block"
-                    style={{ backgroundColor: vibe.palette.stickerBg }}
-                    title="Sticker"
-                  />
+                  <span className="w-4 h-4 rounded-full border-width-theme border-line sticker-shadow inline-block bg-bg" title="Background" />
+                  <span className="w-4 h-4 rounded-full border-width-theme border-line sticker-shadow inline-block bg-primary" title="Primary" />
+                  <span className="w-4 h-4 rounded-full border-width-theme border-line sticker-shadow inline-block bg-accent" title="Accent" />
                 </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>

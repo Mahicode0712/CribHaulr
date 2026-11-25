@@ -5,37 +5,43 @@ import Link from "next/link";
 import {
   Sparkles,
   ArrowRight,
-  ShieldCheck,
-  Heart,
-  Zap,
-  Layers,
   CheckCircle2,
   ChevronDown,
   Star,
-  Smartphone,
-  Truck,
-  RotateCcw,
-  Smile,
+  Lightbulb,
+  Coffee,
+  Flame,
+  BookOpen,
+  Pencil,
+  Gamepad2,
+  Zap,
+  Headphones,
+  NotebookPen,
+  Package,
+  Heart,
+  Cloud,
 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import type { LucideIcon } from "lucide-react";
+import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Sticker } from "@/components/ui/Sticker";
+import { SectionDivider } from "@/components/ui/SectionDivider";
 import { AnimatedBox } from "@/components/preview/AnimatedBox";
 import { useTheme } from "@/context/ThemeContext";
 import { useHaulStore } from "@/lib/store";
-import { VIBES, VIBE_LIST, VibeId } from "@/data/vibes";
+import { VIBE_LIST, type VibeId, type VibeIconName } from "@/data/vibes";
 import { PRODUCTS } from "@/data/products";
-import { formatINR } from "@/lib/utils";
+import { generateStarterBox } from "@/lib/starterBox";
 
 const FAQS = [
   {
     q: "Does this fit standard Indian hostel cots and study tables?",
-    a: "100% yes. We measured standard furniture across IITs, NITs, BITS, Manipal, and DU hostels. Every single item (desk mats, clamp study lights, collapsible hampers, bed organizers) is calibrated for narrow 3x6ft single cots and laminate study desks.",
+    a: "This preview uses mock product data, so fit and measurements are not verified. Check item dimensions against your room before ordering from a real store.",
   },
   {
     q: "How does UPI-First payment work?",
-    a: "Zero card numbers needed. At checkout, tap Google Pay, PhonePe, Paytm, or BHIM. Your banking app will open automatically for 1-tap PIN authorization. You can also scan our dynamic QR code or choose Cash on Delivery at your hostel gate.",
+    a: "This is a checkout UI preview. You can explore UPI apps, a sample QR, cards, and COD, but no banking app opens and no payment is collected.",
   },
   {
     q: "What is the Vibe Score (0-100) and how is it calculated?",
@@ -43,55 +49,76 @@ const FAQS = [
   },
   {
     q: "What if an item arrives broken or my roommate hates it?",
-    a: "We offer a 48-hour no-questions-asked campus replacement guarantee. If a fairy light strand arrives DOA or your mug cracks during courier transit, we dispatch a fresh replacement to your hostel gate immediately.",
+    a: "Returns and replacements are not configured in this prototype. A live store should publish a clear, verified policy before taking orders.",
   },
   {
     q: "What is Roommate Mode?",
-    a: "You can copy a shared haul link or 6-character room code to invite your roommate. They can see what you picked, vote on whether they approve, add their own snacks or utility items, and split the final UPI total with you.",
+    a: "Copy a link with your selected items and vibe to show a roommate. Voting and bill-splitting are not connected in this preview.",
   },
 ];
 
 const REVIEWS = [
   {
-    name: "Kabir S.",
-    campus: "IIT Bombay • Hostel 16",
+    name: "Sample student 01",
+    campus: "Demo content • Dark Academia",
     vibe: "Dark Academia",
-    quote: "My 8 AM fluid mechanics lectures are still brutal, but coming back to this Dark Academia setup makes me feel like a nocturnal scholar. The brass bookends and amber diffuser are certified quality.",
+    quote: "Brass-toned bookends, warm light, and a well-loved notebook make a late-night study corner feel like a tiny archive.",
     rating: 5,
     avatar: "📜",
   },
   {
-    name: "Rhea Menon",
-    campus: "BITS Pilani • Meera Bhawan",
+    name: "Sample student 02",
+    campus: "Demo content • Kawaii Dream",
     vibe: "Kawaii Dream",
-    quote: "The fairy lights + boba cushion + cat wrist rest saved my sanity during semester end-sems. 10/10 hostel glow-up. Literally everyone in my corridor dropped by to ask where I got it.",
+    quote: "Fairy lights, a boba cushion, and pastel desk bits are a cute little reset after a long day on campus.",
     rating: 5,
     avatar: "🌸",
   },
   {
-    name: "Tanmay Deshmukh",
-    campus: "Manipal University • Block 14",
+    name: "Sample student 03",
+    campus: "Demo content • Neon Gamer",
     vibe: "Neon Gamer",
-    quote: "Paid with PhonePe in 5 seconds. Reached our hostel security desk in under 24 hours. The XXL RGB mousepad and lightning bolt sign made our battle station look absurdly clean.",
+    quote: "An XXL RGB mousepad, a neon sign, and fewer cable tangles: battle-station energy without taking over the whole room.",
     rating: 5,
     avatar: "⚡",
   },
   {
-    name: "Ananya Sharma",
-    campus: "SRM Chennai • M-Block",
+    name: "Sample student 04",
+    campus: "Demo content • Cozy Dormcore",
     vibe: "Cozy Dormcore",
-    quote: "The 9:16 Instagram story export got 40+ DMs from batchmates asking where I built the box. The chunky chenille blanket alone was worth the ₹999 tier.",
+    quote: "A chunky throw, warm desk light, and a shareable story card make a cozy corner feel complete.",
     rating: 5,
     avatar: "🧶",
   },
 ];
 
+const VIBE_ICONS: Record<VibeIconName, LucideIcon> = {
+  lightbulb: Lightbulb,
+  coffee: Coffee,
+  flame: Flame,
+  book: BookOpen,
+  candle: Flame,
+  pencil: Pencil,
+  gamepad: Gamepad2,
+  bolt: Zap,
+  headphones: Headphones,
+  notebook: NotebookPen,
+  box: Package,
+  heart: Heart,
+  star: Star,
+  cloud: Cloud,
+};
+
 export default function Home() {
   const { currentVibe, setVibe, vibeInfo } = useTheme();
-  const { setBudgetTier, setVibe: setStoreVibe, clearBox, addItem } = useHaulStore();
+  const { setBudgetTier } = useHaulStore();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const heroItems = PRODUCTS.filter((p) => p.vibes.includes(currentVibe)).slice(0, 4);
+  const heroItems = generateStarterBox(PRODUCTS, "desk", 999, currentVibe);
+
+  const handleSelectVibe = (selectedVibe: VibeId) => {
+    setVibe(selectedVibe);
+  };
 
   const handleSelectTier = (tier: 499 | 999 | 1999) => {
     setBudgetTier(tier);
@@ -111,57 +138,62 @@ export default function Home() {
               ₹499 • ₹999 • ₹1999 Tiers
             </Badge>
             <Sticker color="yellow" tilt="right">
-              ⚡ UPI 1-TAP CHECKOUT
+              ⚡ UPI-FIRST CHECKOUT PREVIEW
             </Sticker>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display text-[var(--text-primary)] leading-[1.06]">
-            Your dorm desk deserves <br className="hidden sm:inline" />
-            <span className="text-[var(--accent)] underline decoration-wavy decoration-3 underline-offset-8">
-              better than chaos.
-            </span>
+          <h1 className="vibe-headline text-4xl sm:text-6xl md:text-7xl font-black tracking-tight font-display text-ink leading-[1.06]">
+            {vibeInfo.headline}
           </h1>
+          <div className="theme-headline-rule h-0.5 w-20 bg-transparent mx-auto lg:mx-0" aria-hidden="true" />
+          <div className="flex items-center justify-center lg:justify-start gap-2" aria-label={`${vibeInfo.name} motifs`}>
+            {vibeInfo.iconNames.map((iconName) => {
+              const Icon = VIBE_ICONS[iconName];
+              return (
+                <span key={iconName} className="flex h-10 w-10 items-center justify-center rounded-btn border-width-theme border-line bg-secondary text-on-secondary sticker-shadow">
+                  <Icon aria-hidden="true" className="h-5 w-5" />
+                </span>
+              );
+            })}
+            <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-muted">
+              {vibeInfo.stickerLabel}
+            </span>
+          </div>
 
-          <p className="text-base sm:text-xl text-[var(--text-secondary)] font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-            Pick your aesthetic vibe, lock your student budget tier, customize 4-5 handpicked essentials, and preview your room before paying with UPI. No generic SaaS boring nonsense.
+          <p className="text-base sm:text-xl text-muted font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            Pick your aesthetic vibe, lock your student budget tier, customize up to five handpicked essentials, and preview the demo checkout. No generic SaaS boring nonsense.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
-            <Link href="/builder">
-              <Button size="lg" variant="primary" className="gap-2 text-base font-black shadow-[4px_4px_0px_var(--shadow-color)]">
-                <Sparkles className="w-5 h-5" />
-                <span>Launch Haul Builder</span>
-                <ArrowRight className="w-5 h-5" />
-              </Button>
-            </Link>
+            <ButtonLink href="/builder" size="lg" variant="primary" className="gap-2 text-base font-black sticker-shadow">
+              <Sparkles className="w-5 h-5" />
+              <span>Launch Haul Builder</span>
+              <ArrowRight className="w-5 h-5" />
+            </ButtonLink>
 
-            <Link href="/catalog">
-              <Button size="lg" variant="secondary" className="text-base font-bold">
-                Browse 40+ Essentials
-              </Button>
-            </Link>
+            <ButtonLink href="/catalog" size="lg" variant="secondary" className="text-base font-bold">
+              Browse 40+ Essentials
+            </ButtonLink>
 
-            <Link href="/drops">
-              <Button size="lg" variant="vibe" className="text-base font-bold gap-1.5">
-                <span>Seasonal Drops</span>
-                <span className="text-xs px-1.5 py-0.2 rounded-full bg-rose-500 text-white">HOT</span>
-              </Button>
-            </Link>
+            <ButtonLink href="/drops" size="lg" variant="vibe" className="text-base font-bold gap-1.5">
+              <span>Seasonal Drops</span>
+              <span className="text-xs px-1.5 py-0.2 rounded-full bg-primary text-on-primary">HOT</span>
+            </ButtonLink>
           </div>
 
           {/* Micro Trust Points */}
-          <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-bold text-[var(--text-muted)]">
+          <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-bold text-muted">
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>Ships in 24h to Dorm Gate</span>
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <span>Hostel-gate delivery preview</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>GPay, PhonePe & Paytm Verified</span>
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <span>UPI-first checkout preview</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-primary" />
               <span>Free 9:16 Instagram Story Card</span>
             </div>
           </div>
@@ -169,11 +201,11 @@ export default function Home() {
 
         {/* Hero Interactive 3D Box Visual */}
         <div className="lg:col-span-5 flex flex-col items-center justify-center">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-[var(--bg-card)] border-3 border-[var(--border-color)] shadow-[8px_8px_0px_var(--shadow-color)] relative">
-            <div className="flex items-center justify-between pb-3 border-b-2 border-[var(--border-color)] mb-4">
+          <div className="w-full max-w-md p-6 rounded-card bg-surface border-width-theme border-line sticker-shadow relative">
+            <div className="flex items-center justify-between pb-3 border-b-width-theme border-line mb-4">
               <div className="flex items-center gap-2">
                 <span className="text-xl">{vibeInfo.emoji}</span>
-                <span className="font-display font-black text-sm text-[var(--text-primary)]">
+                <span className="font-display font-black text-sm text-ink">
                   Live {vibeInfo.name.split("/")[0].trim()} Haul Box
                 </span>
               </div>
@@ -186,8 +218,8 @@ export default function Home() {
               totalPrice={heroItems.reduce((s, i) => s + i.price, 0)}
             />
 
-            <div className="mt-4 pt-3 border-t border-[var(--border-color)]/20 text-center">
-              <Link href="/builder" className="text-xs font-black text-[var(--accent)] hover:underline inline-flex items-center gap-1">
+            <div className="mt-4 pt-3 border-t border-line/20 text-center">
+              <Link href="/builder" className="text-xs font-black text-ink hover:underline inline-flex items-center gap-1">
                 <span>Start customizing this box in the 3D builder</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -197,22 +229,23 @@ export default function Home() {
       </section>
 
       {/* 2. DYNAMIC VIBE PICKER STRIP */}
-      <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-2 border-[var(--border-color)] pb-4">
+      <section className="relative space-y-6">
+        <SectionDivider />
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-width-theme border-line pb-4">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-2xl">{vibeInfo.emoji}</span>
-              <h2 className="text-2xl sm:text-4xl font-display font-black text-[var(--text-primary)] tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-display font-black text-ink tracking-tight">
                 Pick Your Room Vibe
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 font-medium">
+            <p className="text-xs sm:text-sm text-muted mt-1 font-medium">
               Tap any vibe below to instantly re-theme the entire platform into that aesthetic.
             </p>
           </div>
 
           <Badge variant="outline">
-            Active Theme: <strong className="text-[var(--accent)] ml-1">{currentVibe}</strong>
+            Active Theme: <strong className="text-ink ml-1">{currentVibe}</strong>
           </Badge>
         </div>
 
@@ -223,19 +256,22 @@ export default function Home() {
             return (
               <button
                 key={vibe.id}
-                onClick={() => setVibe(vibe.id as VibeId)}
-                className={`text-left p-4 rounded-3xl border-2 transition-all cursor-pointer relative overflow-hidden group ${
+                type="button"
+                aria-pressed={isSelected}
+                data-vibe={vibe.id}
+                onClick={() => handleSelectVibe(vibe.id)}
+                className={`vibe-picker-card text-left p-4 rounded-card border-width-theme transition-all cursor-pointer relative overflow-hidden group ${
                   isSelected
-                    ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] shadow-[5px_5px_0px_var(--shadow-color)] -translate-y-1"
-                    : "bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_var(--shadow-color)]"
+                    ? "bg-primary text-on-primary border-line sticker-shadow -translate-y-1"
+                    : "bg-bg text-ink border-line sticker-shadow hover:-translate-y-0.5 hover:sticker-shadow"
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <span className="text-3xl p-2 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-color)]">
+                  <span className="text-3xl p-2 rounded-card bg-secondary text-on-secondary border-width-theme border-line">
                     {vibe.emoji}
                   </span>
                   {isSelected && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-color)]">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-surface text-ink border-width-theme border-line">
                       Active
                     </span>
                   )}
@@ -245,7 +281,7 @@ export default function Home() {
                   <h3 className="font-display font-extrabold text-base leading-tight">
                     {vibe.name.split("/")[0].trim()}
                   </h3>
-                  <p className={`text-xs mt-1 line-clamp-2 ${isSelected ? "text-[var(--accent-text)]/90" : "text-[var(--text-muted)]"}`}>
+                  <p className={`text-xs mt-1 line-clamp-2 ${isSelected ? "text-on-primary" : "text-muted"}`}>
                     {vibe.tagline}
                   </p>
                 </div>
@@ -254,10 +290,10 @@ export default function Home() {
                   {vibe.moodKeywords.slice(0, 2).map((tag) => (
                     <span
                       key={tag}
-                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md uppercase tracking-wider ${
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-btn uppercase tracking-wider ${
                         isSelected
-                          ? "bg-[var(--bg-card)]/20 text-[var(--accent-text)]"
-                          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)]"
+                          ? "bg-surface/20 text-on-primary"
+                          : "bg-secondary text-on-secondary"
                       }`}
                     >
                       #{tag}
@@ -271,58 +307,59 @@ export default function Home() {
       </section>
 
       {/* 3. HOW IT WORKS (3 SIMPLE STEPS) */}
-      <section className="space-y-8">
+      <section className="relative space-y-8">
+        <SectionDivider />
         <div className="text-center space-y-2 max-w-xl mx-auto">
           <Sticker color="vibe" tilt="none">
             ⚡ 3-STEP FLOW
           </Sticker>
-          <h2 className="text-3xl sm:text-4xl font-black font-display text-[var(--text-primary)]">
+          <h2 className="text-3xl sm:text-4xl font-black font-display text-ink">
             How CribHaulr Works
           </h2>
-          <p className="text-sm text-[var(--text-secondary)] font-medium">
-            Zero decision fatigue. From bare hostel cot to certified aesthetic sanctuary in under 3 minutes.
+          <p className="text-sm text-muted font-medium">
+            Zero decision fatigue. Build a room setup that feels like yours in a few taps.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card hoverEffect className="p-6 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--accent)] text-[var(--accent-text)] flex items-center justify-center font-display font-black text-xl border-2 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)]">
+            <div className="w-12 h-12 rounded-card bg-accent text-on-accent flex items-center justify-center font-display font-black text-xl border-width-theme border-line sticker-shadow">
               01
             </div>
             <div className="space-y-1.5">
-              <h3 className="text-xl font-black font-display text-[var(--text-primary)]">
+              <h3 className="text-xl font-black font-display text-ink">
                 Choose Space & Vibe
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 Pick your target zone (Desk, Bed Corner, or Full Room), select your budget tier (₹499, ₹999, ₹1999), and tap your room aesthetic.
               </p>
             </div>
           </Card>
 
           <Card hoverEffect className="p-6 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--bg-secondary)] text-[var(--text-primary)] flex items-center justify-center font-display font-black text-xl border-2 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)]">
+            <div className="w-12 h-12 rounded-card bg-secondary text-on-secondary flex items-center justify-center font-display font-black text-xl border-width-theme border-line sticker-shadow">
               02
             </div>
             <div className="space-y-1.5">
-              <h3 className="text-xl font-black font-display text-[var(--text-primary)]">
+              <h3 className="text-xl font-black font-display text-ink">
                 Auto-Build & Customise
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                Our algorithm generates a balanced 4-5 item starter haul. Swap products, add ramen or cable clips, and watch your live Vibe Score update.
+              <p className="text-xs text-muted leading-relaxed">
+                Our algorithm generates the best affordable starter haul for your tier. Swap products, add ramen or cable clips, and watch your live Vibe Score update.
               </p>
             </div>
           </Card>
 
           <Card hoverEffect className="p-6 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--sticker-bg)] text-[var(--sticker-text)] flex items-center justify-center font-display font-black text-xl border-2 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)]">
+            <div className="w-12 h-12 rounded-card bg-accent text-on-accent flex items-center justify-center font-display font-black text-xl border-width-theme border-line sticker-shadow">
               03
             </div>
             <div className="space-y-1.5">
-              <h3 className="text-xl font-black font-display text-[var(--text-primary)]">
+              <h3 className="text-xl font-black font-display text-ink">
                 Live Scene & UPI Checkout
               </h3>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                Preview your items placed in the mock room scene, export a 9:16 Instagram story card, and pay in 1-tap with GPay, PhonePe, or Paytm.
+              <p className="text-xs text-muted leading-relaxed">
+                Preview your items in the mock room scene, export a 9:16 Instagram story card, and explore the UPI-first checkout demo.
               </p>
             </div>
           </Card>
@@ -330,23 +367,22 @@ export default function Home() {
       </section>
 
       {/* 4. FEATURED BUDGET TIERS */}
-      <section className="space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-2 border-[var(--border-color)] pb-4">
+      <section className="relative space-y-8">
+        <SectionDivider />
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-width-theme border-line pb-4">
           <div>
-            <h2 className="text-2xl sm:text-4xl font-display font-black text-[var(--text-primary)]">
+            <h2 className="text-2xl sm:text-4xl font-display font-black text-ink">
               Certified Student Tiers
             </h2>
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 font-medium">
+            <p className="text-xs sm:text-sm text-muted mt-1 font-medium">
               Transparent, student-budget pricing. Zero hidden fees.
             </p>
           </div>
 
-          <Link href="/builder">
-            <Button variant="outline" size="sm" className="gap-1">
-              <span>Customise in Builder</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Button>
-          </Link>
+          <ButtonLink href="/builder" variant="outline" size="sm" className="gap-1">
+            <span>Customise in Builder</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </ButtonLink>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -354,45 +390,43 @@ export default function Home() {
           <Card hoverEffect className="p-6 flex flex-col justify-between space-y-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase text-[var(--text-muted)]">
+                <span className="text-xs font-black uppercase text-muted">
                   Fresher Starter
                 </span>
                 <Badge variant="default">Budget Pick</Badge>
               </div>
-              <div className="text-4xl font-black font-display text-[var(--text-primary)]">
+              <div className="theme-price text-4xl font-black font-display">
                 ₹499
               </div>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 Essential desk upgrade with copper fairy lights, cable organizer, and hostel midnight noodles.
               </p>
-              <ul className="text-xs space-y-2 pt-2 text-[var(--text-secondary)] font-medium">
+              <ul className="text-xs space-y-2 pt-2 text-muted font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>3 - 4 Starter Essentials</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Vibe-matched essentials under ₹499</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                   <span>Free Vinyl Sticker Sheet</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Hostel Gate Delivery</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Delivery UI preview</span>
                 </li>
               </ul>
             </div>
 
-            <Link href="/builder" onClick={() => handleSelectTier(499)}>
-              <Button variant="secondary" size="md" className="w-full">
-                Build ₹499 Haul
-              </Button>
-            </Link>
+            <ButtonLink href="/builder" onClick={() => handleSelectTier(499)} variant="secondary" size="md" className="w-full">
+              Build ₹499 Haul
+            </ButtonLink>
           </Card>
 
           {/* Tier 2 */}
           <Card
             hoverEffect
             glow
-            className="p-6 flex flex-col justify-between space-y-6 border-3 relative"
+            className="p-6 flex flex-col justify-between space-y-6 border-width-theme relative"
           >
             <div className="absolute -top-3 right-6">
               <Sticker color="vibe" tilt="right">
@@ -402,91 +436,88 @@ export default function Home() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase text-[var(--accent)]">
+                <span className="text-xs font-black uppercase text-ink">
                   Hostel Core
                 </span>
                 <Badge variant="accent">Best Value</Badge>
               </div>
-              <div className="text-4xl font-black font-display text-[var(--text-primary)]">
+              <div className="theme-price text-4xl font-black font-display">
                 ₹999
               </div>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 The campus sweet spot: full aesthetic desk mat, clip study lamp, boba plush cushion, and power strip.
               </p>
-              <ul className="text-xs space-y-2 pt-2 text-[var(--text-secondary)] font-medium">
+              <ul className="text-xs space-y-2 pt-2 text-muted font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>4 - 5 Balanced Vibe Items</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Up to 5 balanced vibe items</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>90+ Guaranteed Vibe Score</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Live Vibe Score as you build</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                   <span>Free 9:16 Instagram Story Card</span>
                 </li>
               </ul>
             </div>
 
-            <Link href="/builder" onClick={() => handleSelectTier(999)}>
-              <Button variant="primary" size="md" className="w-full shadow-[3px_3px_0px_var(--shadow-color)]">
-                Build ₹999 Haul
-              </Button>
-            </Link>
+            <ButtonLink href="/builder" onClick={() => handleSelectTier(999)} variant="primary" size="md" className="w-full sticker-shadow">
+              Build ₹999 Haul
+            </ButtonLink>
           </Card>
 
           {/* Tier 3 */}
           <Card hoverEffect className="p-6 flex flex-col justify-between space-y-6">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase text-[var(--text-muted)]">
+                <span className="text-xs font-black uppercase text-muted">
                   Baller Suite
                 </span>
                 <Badge variant="default">Luxury Drip</Badge>
               </div>
-              <div className="text-4xl font-black font-display text-[var(--text-primary)]">
+              <div className="theme-price text-4xl font-black font-display">
                 ₹1,999
               </div>
-              <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              <p className="text-xs text-muted leading-relaxed">
                 Full dorm transformation: chunky chenille throw, neon sign, stainless insulated flask, and surge protection.
               </p>
-              <ul className="text-xs space-y-2 pt-2 text-[var(--text-secondary)] font-medium">
+              <ul className="text-xs space-y-2 pt-2 text-muted font-medium">
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>5 - 7 Premium Essentials</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Up to 5 premium essentials</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Roommate Split Support</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Roommate share-link preview</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>VIP Priority Campus Dispatch</span>
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>Priority delivery not connected</span>
                 </li>
               </ul>
             </div>
 
-            <Link href="/builder" onClick={() => handleSelectTier(1999)}>
-              <Button variant="secondary" size="md" className="w-full">
-                Build ₹1,999 Haul
-              </Button>
-            </Link>
+            <ButtonLink href="/builder" onClick={() => handleSelectTier(1999)} variant="secondary" size="md" className="w-full">
+              Build ₹1,999 Haul
+            </ButtonLink>
           </Card>
         </div>
       </section>
 
       {/* 5. UGC / SOCIAL PROOF GRID */}
-      <section className="space-y-8">
+      <section className="relative space-y-8">
+        <SectionDivider />
         <div className="text-center space-y-2 max-w-xl mx-auto">
           <Sticker color="yellow" tilt="left">
             ⭐ CAMPUS APPROVED
           </Sticker>
-          <h2 className="text-3xl sm:text-4xl font-black font-display text-[var(--text-primary)]">
-            Approved by 4,200+ Hostel Residents
+          <h2 className="text-3xl sm:text-4xl font-black font-display text-ink">
+            Sample Hostel Haul Reactions
           </h2>
-          <p className="text-sm text-[var(--text-secondary)] font-medium">
-            Real feedback from students across top engineering, medical, and design campuses in India.
+          <p className="text-sm text-muted font-medium">
+            Illustrative demo copy only—not verified customer reviews or real student feedback.
           </p>
         </div>
 
@@ -496,26 +527,26 @@ export default function Home() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-2xl">{rev.avatar}</span>
-                  <div className="flex items-center text-amber-500">
+                  <div className="flex items-center text-accent">
                     {[...Array(rev.rating)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-current" />
                     ))}
                   </div>
                 </div>
 
-                <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed italic">
+                <p className="text-xs text-muted font-medium leading-relaxed italic">
                   &ldquo;{rev.quote}&rdquo;
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-[var(--border-color)]/20">
-                <div className="font-display font-black text-xs text-[var(--text-primary)]">
+              <div className="pt-3 border-t border-line/20">
+                <div className="font-display font-black text-xs text-ink">
                   {rev.name}
                 </div>
-                <div className="text-[10px] text-[var(--text-muted)] font-bold">
+                <div className="text-[10px] text-muted font-bold">
                   {rev.campus}
                 </div>
-                <span className="inline-block mt-1 text-[9px] font-bold text-[var(--accent)]">
+                <span className="inline-block mt-1 text-[9px] font-bold text-ink">
                   #{rev.vibe}
                 </span>
               </div>
@@ -525,12 +556,13 @@ export default function Home() {
       </section>
 
       {/* 6. FAQ ACCORDION */}
-      <section className="space-y-6 max-w-3xl mx-auto">
+      <section className="relative space-y-6 max-w-3xl mx-auto">
+        <SectionDivider />
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-black font-display text-[var(--text-primary)]">
+          <h2 className="text-3xl font-black font-display text-ink">
             Frequently Asked Questions
           </h2>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
+          <p className="text-xs sm:text-sm text-muted">
             Everything you need to know about dorm delivery, payment, and room dimensions.
           </p>
         </div>
@@ -541,22 +573,22 @@ export default function Home() {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] shadow-[3px_3px_0px_var(--shadow-color)] overflow-hidden"
+                className="rounded-card border-width-theme border-line bg-surface sticker-shadow overflow-hidden"
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full p-4 text-left font-display font-black text-sm text-[var(--text-primary)] flex items-center justify-between gap-3 cursor-pointer"
+                  className="w-full p-4 text-left font-display font-black text-sm text-ink flex items-center justify-between gap-3 cursor-pointer"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-[var(--accent)] shrink-0 transition-transform duration-200 ${
+                    className={`w-4 h-4 text-accent shrink-0 transition-transform duration-200 ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
 
                 {isOpen && (
-                  <div className="px-4 pb-4 text-xs text-[var(--text-secondary)] font-medium leading-relaxed border-t border-[var(--border-color)]/20 pt-2">
+                  <div className="px-4 pb-4 text-xs text-muted font-medium leading-relaxed border-t border-line/20 pt-2">
                     {faq.a}
                   </div>
                 )}
@@ -567,47 +599,47 @@ export default function Home() {
       </section>
 
       {/* 7. PLAYFUL FOOTER */}
-      <footer className="pt-12 border-t-3 border-[var(--border-color)] space-y-8">
+      <footer className="pt-12 border-t-width-theme border-line space-y-8 bg-deep">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-[var(--accent)] text-[var(--accent-text)] border-2 border-[var(--border-color)] flex items-center justify-center font-display font-black text-2xl shadow-[2px_2px_0px_var(--shadow-color)]">
+            <div className="w-11 h-11 rounded-card bg-accent text-on-accent border-width-theme border-line flex items-center justify-center font-display font-black text-2xl sticker-shadow">
               📦
             </div>
             <div>
-              <span className="font-display font-black text-xl tracking-tight text-[var(--text-primary)]">
-                Crib<span className="text-[var(--accent)]">Haulr</span>
+              <span className="font-display font-black text-xl tracking-tight text-ink">
+                Crib<span className="text-ink">Haulr</span>
               </span>
-              <p className="text-[11px] text-[var(--text-muted)] font-medium">
+              <p className="text-[11px] text-muted font-medium">
                 Build-your-own dorm aesthetic box • UPI-First • Made in India
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4 text-xs font-display font-bold">
-            <Link href="/builder" className="hover:text-[var(--accent)]">
+            <Link href="/builder" className="hover:text-ink">
               Builder
             </Link>
-            <Link href="/catalog" className="hover:text-[var(--accent)]">
+            <Link href="/catalog" className="hover:text-ink">
               Catalog
             </Link>
-            <Link href="/drops" className="hover:text-[var(--accent)]">
+            <Link href="/drops" className="hover:text-ink">
               Seasonal Drops
             </Link>
-            <Link href="/checkout" className="hover:text-[var(--accent)]">
+            <Link href="/checkout" className="hover:text-ink">
               Checkout
             </Link>
-            <Link href="/share" className="hover:text-[var(--accent)]">
+            <Link href="/share" className="hover:text-ink">
               Story Card
             </Link>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[var(--text-muted)] font-medium border-t border-[var(--border-color)]/20 pt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-muted font-medium border-t border-line/20 pt-4">
           <span>&copy; {new Date().getFullYear()} CribHaulr. Built for Indian college dorm & hostel survivors.</span>
           <span className="flex items-center gap-1 font-bold">
             <span>Powered by Next.js & Turbopack</span>
             <span>•</span>
-            <span className="text-[var(--accent)]">WCAG AA Compliant</span>
+            <span className="text-ink">WCAG AA Compliant</span>
           </span>
         </div>
       </footer>

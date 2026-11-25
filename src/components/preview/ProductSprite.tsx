@@ -39,10 +39,10 @@ export function ProductSprite({
                 strokeWidth="2"
                 strokeDasharray="2 3"
               />
-              <circle cx="20" cy="22" r="4.5" fill="#FFF07C" className="animate-pulse" />
-              <circle cx="50" cy="18" r="4.5" fill="#FF5E8E" className="animate-pulse" />
-              <circle cx="80" cy="22" r="4.5" fill="#00F0FF" className="animate-pulse" />
-              <circle cx="105" cy="18" r="4.5" fill="#39FF14" className="animate-pulse" />
+              <circle cx="20" cy="22" r="4.5" fill="var(--accent)" className="animate-pulse" />
+              <circle cx="50" cy="18" r="4.5" fill="var(--primary)" className="animate-pulse" />
+              <circle cx="80" cy="22" r="4.5" fill="var(--secondary)" className="animate-pulse" />
+              <circle cx="105" cy="18" r="4.5" fill="var(--highlight, var(--accent))" className="animate-pulse" />
             </svg>
           );
         }
@@ -61,10 +61,10 @@ export function ProductSprite({
         if (product.sprite === "cloud-tapestry") {
           return (
             <svg viewBox="0 0 100 70" className="w-24 sm:w-32 drop-shadow-lg">
-              <rect x="5" y="5" width="90" height="60" rx="6" fill="#FFE4EC" stroke="var(--border-color)" strokeWidth="2" />
-              <circle cx="35" cy="35" r="14" fill="#FFFFFF" />
-              <circle cx="55" cy="32" r="18" fill="#FFFFFF" />
-              <circle cx="70" cy="38" r="12" fill="#FFFFFF" />
+              <rect x="5" y="5" width="90" height="60" rx="6" fill="var(--surface)" stroke="var(--border-color)" strokeWidth="2" />
+              <circle cx="35" cy="35" r="14" fill="var(--bg)" />
+              <circle cx="55" cy="32" r="18" fill="var(--bg)" />
+              <circle cx="70" cy="38" r="12" fill="var(--bg)" />
               <path d="M 5 5 L 50 0 L 95 5" fill="none" stroke="var(--border-color)" strokeWidth="2" />
             </svg>
           );
@@ -99,10 +99,10 @@ export function ProductSprite({
         if (product.sprite === "cat-wrist-rest") {
           return (
             <svg viewBox="0 0 90 35" className="w-20 sm:w-24 drop-shadow-sm">
-              <rect x="4" y="8" width="82" height="22" rx="10" fill="#FFB7D5" stroke="var(--border-color)" strokeWidth="2" />
-              <circle cx="22" cy="18" r="4" fill="#FFFFFF" />
-              <circle cx="45" cy="18" r="4" fill="#FFFFFF" />
-              <circle cx="68" cy="18" r="4" fill="#FFFFFF" />
+              <rect x="4" y="8" width="82" height="22" rx="10" fill="var(--primary)" stroke="var(--border-color)" strokeWidth="2" />
+              <circle cx="22" cy="18" r="4" fill="var(--surface)" />
+              <circle cx="45" cy="18" r="4" fill="var(--surface)" />
+              <circle cx="68" cy="18" r="4" fill="var(--surface)" />
             </svg>
           );
         }
@@ -131,7 +131,7 @@ export function ProductSprite({
             <svg viewBox="0 0 120 70" className="w-28 sm:w-36 drop-shadow-lg">
               <path
                 d="M 10 15 C 30 5, 80 5, 110 15 C 115 35, 105 60, 95 65 C 60 70, 30 65, 10 55 Z"
-                fill="var(--accent-soft, #FCE8E0)"
+                fill="var(--secondary)"
                 stroke="var(--border-color)"
                 strokeWidth="2.5"
               />
@@ -143,17 +143,17 @@ export function ProductSprite({
         if (product.sprite === "boba-plushie") {
           return (
             <svg viewBox="0 0 60 80" className="w-12 sm:w-16 drop-shadow-md">
-              <rect x="10" y="25" width="40" height="50" rx="12" fill="#FFE3D1" stroke="var(--border-color)" strokeWidth="2" />
+              <rect x="10" y="25" width="40" height="50" rx="12" fill="var(--primary)" stroke="var(--border-color)" strokeWidth="2" />
               {/* Straw */}
-              <line x1="30" y1="25" x2="38" y2="6" stroke="#FF5E8E" strokeWidth="6" strokeLinecap="round" />
+              <line x1="30" y1="25" x2="38" y2="6" stroke="var(--accent)" strokeWidth="6" strokeLinecap="round" />
               {/* Pearls */}
-              <circle cx="20" cy="62" r="3" fill="#2C221E" />
-              <circle cx="30" cy="65" r="3" fill="#2C221E" />
-              <circle cx="40" cy="61" r="3" fill="#2C221E" />
+              <circle cx="20" cy="62" r="3" fill="var(--ink)" />
+              <circle cx="30" cy="65" r="3" fill="var(--ink)" />
+              <circle cx="40" cy="61" r="3" fill="var(--ink)" />
               {/* Cute face */}
-              <circle cx="24" cy="40" r="2" fill="#2C221E" />
-              <circle cx="36" cy="40" r="2" fill="#2C221E" />
-              <path d="M 27 46 Q 30 49 33 46" fill="none" stroke="#2C221E" strokeWidth="1.5" />
+              <circle cx="24" cy="40" r="2" fill="var(--ink)" />
+              <circle cx="36" cy="40" r="2" fill="var(--ink)" />
+              <path d="M 27 46 Q 30 49 33 46" fill="none" stroke="var(--ink)" strokeWidth="1.5" />
             </svg>
           );
         }
@@ -181,7 +181,7 @@ export function ProductSprite({
         if (product.sprite === "steel-flask") {
           return (
             <svg viewBox="0 0 40 80" className="w-8 sm:w-10 drop-shadow-md">
-              <rect x="8" y="20" width="24" height="54" rx="5" fill="#E4E4E7" stroke="var(--border-color)" strokeWidth="2" />
+              <rect x="8" y="20" width="24" height="54" rx="5" fill="var(--surface)" stroke="var(--border-color)" strokeWidth="2" />
               <rect x="12" y="8" width="16" height="12" rx="3" fill="var(--accent)" stroke="var(--border-color)" strokeWidth="2" />
               <line x1="8" y1="36" x2="32" y2="36" stroke="var(--border-color)" strokeWidth="1" />
             </svg>
@@ -200,16 +200,16 @@ export function ProductSprite({
         if (product.sprite === "maggi-pack") {
           return (
             <svg viewBox="0 0 60 50" className="w-12 sm:w-16 drop-shadow-md">
-              <rect x="4" y="6" width="52" height="38" rx="4" fill="#FFF07C" stroke="var(--border-color)" strokeWidth="2" />
-              <circle cx="30" cy="24" r="10" fill="#FF5E8E" />
-              <path d="M 24 24 Q 30 20 36 24" fill="none" stroke="#FFFFFF" strokeWidth="2" />
+              <rect x="4" y="6" width="52" height="38" rx="4" fill="var(--accent)" stroke="var(--border-color)" strokeWidth="2" />
+              <circle cx="30" cy="24" r="10" fill="var(--primary)" />
+              <path d="M 24 24 Q 30 20 36 24" fill="none" stroke="var(--surface)" strokeWidth="2" />
             </svg>
           );
         }
         if (product.sprite === "gingham-mug") {
           return (
             <svg viewBox="0 0 60 60" className="w-12 sm:w-14 drop-shadow-md">
-              <rect x="8" y="14" width="34" height="38" rx="6" fill="#FCE8E0" stroke="var(--border-color)" strokeWidth="2" />
+              <rect x="8" y="14" width="34" height="38" rx="6" fill="var(--secondary)" stroke="var(--border-color)" strokeWidth="2" />
               {/* Handle */}
               <path d="M 42 22 C 54 22, 54 42, 42 42" fill="none" stroke="var(--border-color)" strokeWidth="3" />
               {/* Steam */}
@@ -229,7 +229,12 @@ export function ProductSprite({
   };
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
+      aria-label={`Remove ${product.name} from scene`}
+      title={`Remove ${product.name} from scene`}
+      disabled={!onRemove}
+      onClick={() => onRemove?.(product.id)}
       initial={{ scale: 0, opacity: 0, y: -20 }}
       animate={{
         scale: scale,
@@ -249,7 +254,7 @@ export function ProductSprite({
         transform: "translate(-50%, -50%)",
         zIndex: isHovered ? 50 : zIndex,
       }}
-      className="cursor-pointer select-none"
+      className="cursor-pointer select-none border-0 bg-transparent p-0 disabled:cursor-default"
     >
       {/* Sprite Vector Graphic */}
       <div className="relative group">
@@ -262,18 +267,18 @@ export function ProductSprite({
               initial={{ opacity: 0, scale: 0.9, y: 6 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 6 }}
-              className="absolute left-1/2 -translate-x-1/2 -top-12 z-50 whitespace-nowrap bg-[var(--bg-card)] border-2 border-[var(--border-color)] px-3 py-1 rounded-xl shadow-[3px_3px_0px_var(--shadow-color)] flex items-center gap-2 pointer-events-none"
+              className="absolute left-1/2 -translate-x-1/2 -top-12 z-50 whitespace-nowrap bg-surface border-width-theme border-line px-3 py-1 rounded-btn sticker-shadow flex items-center gap-2 pointer-events-none"
             >
-              <span className="text-[11px] font-display font-black text-[var(--text-primary)]">
+              <span className="text-[11px] font-display font-black text-ink">
                 {product.name}
               </span>
-              <span className="text-[10px] font-bold text-[var(--accent)]">
+              <span className="theme-price text-[10px] font-bold">
                 {formatINR(product.price)}
               </span>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }

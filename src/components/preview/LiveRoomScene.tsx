@@ -38,15 +38,15 @@ export function LiveRoomScene({
   return (
     <div className="w-full space-y-4">
       {/* Top Scene Toolbar Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[var(--bg-card)] border-2 border-[var(--border-color)] rounded-2xl p-2.5 sm:p-3 shadow-[3px_3px_0px_var(--shadow-color)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-surface border-width-theme border-line rounded-card p-2.5 sm:p-3 sticker-shadow">
         {/* View Mode Toggle */}
-        <div className="flex items-center gap-1.5 bg-[var(--bg-secondary)] p-1 rounded-xl border border-[var(--border-color)]/30">
+        <div className="flex items-center gap-1.5 bg-secondary p-1 rounded-btn border-width-theme border-line/30">
           <button
             onClick={() => setViewMode("scene")}
-            className={`px-3 py-1.5 rounded-lg font-display font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-btn font-display font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
               viewMode === "scene"
-                ? "bg-[var(--accent)] text-[var(--accent-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                ? "bg-accent text-on-accent border-width-theme border-line sticker-shadow"
+                : "text-muted hover:text-ink"
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -55,10 +55,10 @@ export function LiveRoomScene({
 
           <button
             onClick={() => setViewMode("box")}
-            className={`px-3 py-1.5 rounded-lg font-display font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-btn font-display font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
               viewMode === "box"
-                ? "bg-[var(--accent)] text-[var(--accent-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]"
-                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                ? "bg-accent text-on-accent border-width-theme border-line sticker-shadow"
+                : "text-muted hover:text-ink"
             }`}
           >
             <BoxIcon className="w-3.5 h-3.5" />
@@ -73,10 +73,10 @@ export function LiveRoomScene({
               <button
                 key={s}
                 onClick={() => onSelectSpace(s)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-display font-extrabold uppercase tracking-wider border transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-btn text-[11px] font-display font-extrabold uppercase tracking-wider border transition-all cursor-pointer ${
                   space === s
-                    ? "bg-[var(--sticker-bg)] text-[var(--sticker-text)] border-[var(--border-color)] shadow-[1.5px_1.5px_0px_var(--shadow-color)]"
-                    : "bg-transparent text-[var(--text-muted)] border-transparent hover:text-[var(--text-primary)]"
+                    ? "bg-accent text-on-accent border-line sticker-shadow"
+                    : "bg-transparent text-muted border-transparent hover:text-ink"
                 }`}
               >
                 {s}
@@ -87,17 +87,17 @@ export function LiveRoomScene({
 
         {/* Score & Item Count Badge */}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold font-display text-[var(--text-primary)]">
+          <span className="text-xs font-bold font-display text-ink">
             {items.length} {items.length === 1 ? "Item" : "Items"} Placed
           </span>
-          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)]">
+          <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-accent text-on-accent border-width-theme border-line">
             Vibe: {vibeScore}/100
           </span>
         </div>
       </div>
 
       {/* Main Interactive Stage */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[550px] bg-[var(--bg-secondary)] border-3 border-[var(--border-color)] rounded-3xl overflow-hidden shadow-[6px_6px_0px_var(--shadow-color)]">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] max-h-[550px] bg-secondary border-width-theme border-line rounded-card overflow-hidden sticker-shadow">
         {viewMode === "scene" ? (
           <>
             {/* Layer 1: Background SVG Scene */}
@@ -119,13 +119,13 @@ export function LiveRoomScene({
 
             {/* Empty State Overlay */}
             {items.length === 0 && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-black/20 backdrop-blur-xs text-center z-20">
-                <div className="p-4 rounded-3xl bg-[var(--bg-card)] border-2 border-[var(--border-color)] shadow-[4px_4px_0px_var(--shadow-color)] max-w-sm space-y-2">
+              <div className="theme-scrim-subtle absolute inset-0 flex flex-col items-center justify-center p-6 backdrop-blur-xs text-center z-20">
+                <div className="p-4 rounded-card bg-surface border-width-theme border-line sticker-shadow max-w-sm space-y-2">
                   <span className="text-3xl">🪑</span>
-                  <h4 className="font-display font-black text-sm text-[var(--text-primary)]">
+                  <h4 className="font-display font-black text-sm text-ink">
                     Your {space.toUpperCase()} is bare!
                   </h4>
-                  <p className="text-xs text-[var(--text-secondary)]">
+                  <p className="text-xs text-muted">
                     Add decor, fairy lights, cushions, or desk accessories from the customizer to populate your scene.
                   </p>
                 </div>
@@ -140,16 +140,16 @@ export function LiveRoomScene({
             </div>
 
             {/* Bottom-right Price Tag */}
-            <div className="absolute bottom-3 right-3 z-30 bg-[var(--bg-card)] border-2 border-[var(--border-color)] px-3 py-1 rounded-xl shadow-[2px_2px_0px_var(--shadow-color)] flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-[var(--text-muted)]">HAUL TOTAL:</span>
-              <span className="text-xs font-black font-display text-[var(--text-primary)]">
+            <div className="absolute bottom-3 right-3 z-30 bg-surface border-width-theme border-line px-3 py-1 rounded-btn sticker-shadow flex items-center gap-1.5">
+              <span className="text-[10px] font-bold text-muted">HAUL TOTAL:</span>
+              <span className="text-xs font-black font-display text-ink">
                 {formatINR(totalPrice)}
               </span>
             </div>
           </>
         ) : (
           /* 3D Box Mode */
-          <div className="w-full h-full flex items-center justify-center bg-[var(--bg-secondary)]">
+          <div className="w-full h-full flex items-center justify-center bg-secondary">
             <AnimatedBox items={items} vibe={vibe} totalPrice={totalPrice} />
           </div>
         )}

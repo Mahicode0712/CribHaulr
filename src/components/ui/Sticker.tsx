@@ -24,11 +24,11 @@ export function Sticker({
   };
 
   const colorStyles = {
-    vibe: "bg-[var(--sticker-bg)] text-[var(--sticker-text)]",
-    yellow: "bg-[#FFF07C] text-[#2C221E]",
-    pink: "bg-[#FFB7D5] text-[#2C221E]",
-    cyan: "bg-[#7CEFFF] text-[#0D0F18]",
-    green: "bg-[#A7FF83] text-[#0D0F18]",
+    vibe: "bg-accent text-on-accent",
+    yellow: "bg-accent text-on-accent",
+    pink: "bg-accent text-on-accent",
+    cyan: "bg-accent text-on-accent",
+    green: "bg-accent text-on-accent",
   };
 
   return (
@@ -37,7 +37,7 @@ export function Sticker({
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 20 }}
       className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 border-[var(--border-color)] font-display font-extrabold text-xs shadow-[2px_2px_0px_var(--shadow-color)] select-none cursor-default transition-transform duration-150",
+        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-theme font-display font-extrabold text-xs sticker-shadow select-none cursor-default transition-transform duration-150",
         tiltClasses[tilt],
         colorStyles[color],
         className

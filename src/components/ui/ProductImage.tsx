@@ -24,10 +24,10 @@ export function ProductImage({
     case "decor":
       return (
         <div
-          className={`flex items-center justify-center bg-amber-500/10 border-b-2 border-[var(--border-color)] overflow-hidden relative ${className}`}
+          className={`flex items-center justify-center bg-accent/10 border-b-width-theme border-line overflow-hidden relative ${className}`}
         >
           <svg
-            className="w-2/3 h-2/3 text-[var(--accent)] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
+            className="w-2/3 h-2/3 text-accent"
             viewBox="0 0 100 100"
             fill="none"
             stroke="currentColor"
@@ -37,9 +37,9 @@ export function ProductImage({
           >
             {/* Hanging fairy lights & frame motif */}
             <path d="M10 25 Q 35 40 50 25 T 90 25" strokeDasharray="3 3" />
-            <circle cx="25" cy="32" r="5" fill="#F5E3A9" stroke="currentColor" />
-            <circle cx="50" cy="25" r="5" fill="#FF5E8E" stroke="currentColor" />
-            <circle cx="75" cy="32" r="5" fill="#00F0FF" stroke="currentColor" />
+            <circle cx="25" cy="32" r="5" fill="var(--accent)" stroke="currentColor" />
+            <circle cx="50" cy="25" r="5" fill="var(--primary)" stroke="currentColor" />
+            <circle cx="75" cy="32" r="5" fill="var(--secondary)" stroke="currentColor" />
             {/* Framed wall art motif */}
             <rect
               x="30"
@@ -50,10 +50,10 @@ export function ProductImage({
               fill="var(--bg-card)"
               stroke="currentColor"
             />
-            <circle cx="50" cy="62" r="8" fill="#FCE8E0" stroke="currentColor" />
+            <circle cx="50" cy="62" r="8" fill="var(--secondary)" stroke="currentColor" />
             <path d="M35 80 Q 50 68 65 80" stroke="currentColor" fill="none" />
           </svg>
-          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]">
+          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent text-on-accent border-width-theme border-line sticker-shadow">
             ✨ Decor
           </span>
         </div>
@@ -62,10 +62,10 @@ export function ProductImage({
     case "desk":
       return (
         <div
-          className={`flex items-center justify-center bg-blue-500/10 border-b-2 border-[var(--border-color)] overflow-hidden relative ${className}`}
+          className={`flex items-center justify-center bg-secondary/10 border-b-width-theme border-line overflow-hidden relative ${className}`}
         >
           <svg
-            className="w-2/3 h-2/3 text-[var(--accent)] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
+            className="w-2/3 h-2/3 text-accent"
             viewBox="0 0 100 100"
             fill="none"
             stroke="currentColor"
@@ -99,7 +99,7 @@ export function ProductImage({
             <line x1="78" y1="45" x2="74" y2="35" stroke="currentColor" />
             <line x1="85" y1="45" x2="88" y2="33" stroke="currentColor" />
           </svg>
-          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]">
+          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent text-on-accent border-width-theme border-line sticker-shadow">
             💻 Study
           </span>
         </div>
@@ -108,10 +108,10 @@ export function ProductImage({
     case "comfort":
       return (
         <div
-          className={`flex items-center justify-center bg-rose-500/10 border-b-2 border-[var(--border-color)] overflow-hidden relative ${className}`}
+          className={`flex items-center justify-center bg-primary/10 border-b-width-theme border-line overflow-hidden relative ${className}`}
         >
           <svg
-            className="w-2/3 h-2/3 text-[var(--accent)] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
+            className="w-2/3 h-2/3 text-accent"
             viewBox="0 0 100 100"
             fill="none"
             stroke="currentColor"
@@ -144,7 +144,7 @@ export function ProductImage({
               stroke="currentColor"
             />
           </svg>
-          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]">
+          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent text-on-accent border-width-theme border-line sticker-shadow">
             ☁️ Cozy
           </span>
         </div>
@@ -153,10 +153,10 @@ export function ProductImage({
     case "utility":
       return (
         <div
-          className={`flex items-center justify-center bg-emerald-500/10 border-b-2 border-[var(--border-color)] overflow-hidden relative ${className}`}
+          className={`flex items-center justify-center bg-primary/10 border-b-width-theme border-line overflow-hidden relative ${className}`}
         >
           <svg
-            className="w-2/3 h-2/3 text-[var(--accent)] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
+            className="w-2/3 h-2/3 text-accent"
             viewBox="0 0 100 100"
             fill="none"
             stroke="currentColor"
@@ -182,7 +182,7 @@ export function ProductImage({
             <line x1="46" y1="35" x2="46" y2="40" stroke="var(--accent)" strokeWidth="3" />
             <line x1="62" y1="35" x2="62" y2="40" stroke="var(--accent)" strokeWidth="3" />
           </svg>
-          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]">
+          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent text-on-accent border-width-theme border-line sticker-shadow">
             ⚡ Essential
           </span>
         </div>
@@ -192,10 +192,10 @@ export function ProductImage({
     default:
       return (
         <div
-          className={`flex items-center justify-center bg-purple-500/10 border-b-2 border-[var(--border-color)] overflow-hidden relative ${className}`}
+          className={`flex items-center justify-center bg-secondary/10 border-b-width-theme border-line overflow-hidden relative ${className}`}
         >
           <svg
-            className="w-2/3 h-2/3 text-[var(--accent)] drop-shadow-[2px_2px_0px_rgba(0,0,0,0.15)]"
+            className="w-2/3 h-2/3 text-accent"
             viewBox="0 0 100 100"
             fill="none"
             stroke="currentColor"
@@ -216,12 +216,12 @@ export function ProductImage({
             {/* Sparkles */}
             <path
               d="M75 20 Q 80 25 85 20 Q 80 15 75 20"
-              fill="#F5E3A9"
+              fill="var(--accent)"
               stroke="currentColor"
               strokeWidth="1.5"
             />
           </svg>
-          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--sticker-bg)] text-[var(--sticker-text)] border border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]">
+          <span className="absolute bottom-2 right-2 text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent text-on-accent border-width-theme border-line sticker-shadow">
             🍜 Snacks & Fun
           </span>
         </div>

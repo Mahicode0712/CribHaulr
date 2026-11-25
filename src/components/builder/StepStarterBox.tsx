@@ -1,24 +1,23 @@
 "use client";
 
 import React from "react";
-import { Sparkles, RefreshCw, ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import { RefreshCw, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Sticker } from "@/components/ui/Sticker";
 import { ProductImage } from "@/components/ui/ProductImage";
-import { Product, BudgetTier, SpaceType, VibeScoreResult } from "@/types";
-import { VibeId, VIBES } from "@/data/vibes";
+import type { Product, BudgetTier, VibeScoreResult } from "@/types";
+import { VIBES, type VibeId } from "@/data/vibes";
 import { formatINR } from "@/lib/utils";
 
 interface StepStarterBoxProps {
   items: Product[];
   vibe: VibeId;
-  space: SpaceType;
   budgetTier: BudgetTier;
   totalPrice: number;
   vibeScore: VibeScoreResult;
   isGenerating: boolean;
+  generationError: string | null;
   onRegenerate: () => void;
   onProceed: () => void;
 }
@@ -26,11 +25,11 @@ interface StepStarterBoxProps {
 export function StepStarterBox({
   items,
   vibe,
-  space,
   budgetTier,
   totalPrice,
   vibeScore,
   isGenerating,
+  generationError,
   onRegenerate,
   onProceed,
 }: StepStarterBoxProps) {
@@ -40,16 +39,16 @@ export function StepStarterBox({
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Step Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[var(--border-color)]/30 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-width-theme border-line/30 pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">{currentVibeInfo.emoji}</span>
-            <h2 className="text-xl sm:text-2xl font-black font-display text-[var(--text-primary)]">
-              Step 4: Your Auto-Built Starter Haul
+            <h2 className="text-xl sm:text-2xl font-black font-display text-ink">
+              Step 3: Your Auto-Built Starter Haul
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium">
-            Curated to match your <strong className="text-[var(--accent)]">{currentVibeInfo.name}</strong> aesthetic within your {formatINR(budgetTier)} budget.
+          <p className="text-xs sm:text-sm text-muted font-medium">
+            Curated to match your <strong className="text-ink">{currentVibeInfo.name}</strong> aesthetic within your {formatINR(budgetTier)} budget.
           </p>
         </div>
 
@@ -80,32 +79,32 @@ export function StepStarterBox({
       {/* Box Summary Stats Banner */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[var(--accent)] text-[var(--accent-text)] flex items-center justify-center font-bold text-lg border-2 border-[var(--border-color)]">
+          <div className="w-10 h-10 rounded-card bg-accent text-on-accent flex items-center justify-center font-bold text-lg border-width-theme border-line">
             📦
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+            <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
               Starter Contents
             </span>
-            <span className="text-base font-black font-display text-[var(--text-primary)]">
+            <span className="theme-price text-base font-black font-display">
               {items.length} Handpicked Items
             </span>
           </div>
         </Card>
 
         <Card className="p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[var(--bg-secondary)] text-[var(--text-primary)] flex items-center justify-center font-bold text-lg border-2 border-[var(--border-color)]">
+          <div className="w-10 h-10 rounded-card bg-secondary text-on-secondary flex items-center justify-center font-bold text-lg border-width-theme border-line">
             ₹
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+            <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
               Starter Total
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-base font-black font-display text-[var(--text-primary)]">
+              <span className="text-base font-black font-display text-ink">
                 {formatINR(totalPrice)}
               </span>
-              <span className="text-xs text-[var(--text-muted)] font-bold">
+              <span className="text-xs text-muted font-bold">
                 / {formatINR(budgetTier)}
               </span>
             </div>
@@ -113,18 +112,18 @@ export function StepStarterBox({
         </Card>
 
         <Card className="p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[var(--sticker-bg)] text-[var(--sticker-text)] flex items-center justify-center font-bold text-lg border-2 border-[var(--border-color)]">
+          <div className="w-10 h-10 rounded-card bg-accent text-on-accent flex items-center justify-center font-bold text-lg border-width-theme border-line">
             ✨
           </div>
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[var(--text-muted)] block">
+            <span className="text-[10px] font-black uppercase tracking-wider text-muted block">
               Starting Vibe Score
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-base font-black font-display text-[var(--accent)]">
+              <span className="text-base font-black font-display text-ink">
                 {vibeScore.score}/100
               </span>
-              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.2 rounded-full">
+              <span className="text-on-secondary bg-secondary px-1.5 py-0.2 rounded-full">
                 Cohesive
               </span>
             </div>
@@ -132,17 +131,51 @@ export function StepStarterBox({
         </Card>
       </div>
 
+      {isOverBudget && (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-card border-width-theme border-primary/40 bg-primary/10 p-3 text-xs font-semibold text-ink"
+        >
+          <span aria-hidden="true">⚠️</span>
+          <span>
+            This haul is {formatINR(totalPrice - budgetTier)} over budget. Swap an item before checkout.
+          </span>
+        </div>
+      )}
+
+      {generationError && (
+        <div
+          role="alert"
+          className="flex flex-col gap-3 rounded-card border-width-theme border-primary/40 bg-primary/10 p-4 text-sm text-ink sm:flex-row sm:items-center sm:justify-between"
+        >
+          <span>{generationError}</span>
+          <Button variant="outline" size="sm" onClick={onRegenerate}>
+            Try again
+          </Button>
+        </div>
+      )}
+
       {/* Starter Items Grid */}
       {isGenerating ? (
         <div className="py-20 text-center space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-[var(--accent)] text-[var(--accent-text)] border-3 border-[var(--border-color)] mx-auto flex items-center justify-center text-3xl animate-bounce shadow-[4px_4px_0px_var(--shadow-color)]">
+          <div className="w-16 h-16 rounded-card bg-accent text-on-accent border-width-theme border-line mx-auto flex items-center justify-center text-3xl animate-bounce sticker-shadow">
             📦
           </div>
-          <h3 className="text-xl font-bold font-display text-[var(--text-primary)]">
+          <h3 className="text-xl font-bold font-display text-ink">
             Curating your hostel haul...
           </h3>
-          <p className="text-xs text-[var(--text-secondary)]">
+          <p className="text-xs text-muted">
             Balancing decor, comfort, study, utility, and munchies.
+          </p>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="space-y-3 rounded-card border-width-theme border-dashed border-line/50 p-8 text-center">
+          <span className="text-4xl" aria-hidden="true">📦</span>
+          <h3 className="font-display font-bold text-lg text-ink">
+            No starter items fit this setup yet
+          </h3>
+          <p className="text-sm text-muted">
+            Try another room vibe or budget, then shuffle the haul again.
           </p>
         </div>
       ) : (
@@ -158,27 +191,27 @@ export function StepStarterBox({
                   name={item.name}
                   sprite={item.sprite}
                 />
-                <span className="absolute top-2 left-2 text-[10px] font-black px-2 py-0.5 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)]">
+                <span className="absolute top-2 left-2 text-[10px] font-black px-2 py-0.5 rounded-full bg-surface border-width-theme border-line">
                   #{idx + 1} Starter
                 </span>
               </div>
 
               <div className="p-4 space-y-2">
                 <div>
-                  <span className="text-[9px] font-black uppercase tracking-wider text-[var(--accent)] block">
+                  <span className="text-[9px] font-black uppercase tracking-wider text-ink block">
                     {item.category.toUpperCase()}
                   </span>
-                  <h4 className="font-display font-bold text-sm text-[var(--text-primary)] leading-snug line-clamp-1">
+                  <h4 className="font-display font-bold text-sm text-ink leading-snug line-clamp-1">
                     {item.name}
                   </h4>
                 </div>
 
-                <p className="text-xs text-[var(--text-secondary)] line-clamp-2">
+                <p className="text-xs text-muted line-clamp-2">
                   {item.description}
                 </p>
 
-                <div className="pt-2 border-t border-[var(--border-color)]/20 flex items-center justify-between">
-                  <span className="text-sm font-black font-display text-[var(--text-primary)]">
+                <div className="pt-2 border-t border-line/20 flex items-center justify-between">
+                  <span className="theme-price text-sm font-black font-display">
                     {formatINR(item.price)}
                   </span>
                   <Badge variant="accent">In Box</Badge>
@@ -190,12 +223,12 @@ export function StepStarterBox({
       )}
 
       {/* Bottom CTA Bar */}
-      <div className="p-6 rounded-3xl bg-[var(--bg-card)] border-2 border-[var(--border-color)] shadow-[4px_4px_0px_var(--shadow-color)] flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="p-6 rounded-card bg-surface border-width-theme border-line sticker-shadow flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="space-y-1 text-center sm:text-left">
-          <h4 className="font-display font-black text-base text-[var(--text-primary)]">
+          <h4 className="font-display font-black text-base text-ink">
             Ready to fine-tune your items?
           </h4>
-          <p className="text-xs text-[var(--text-secondary)]">
+          <p className="text-xs text-muted">
             Swap any item with 40+ alternatives, remove things you don&apos;t need, and boost your vibe score.
           </p>
         </div>

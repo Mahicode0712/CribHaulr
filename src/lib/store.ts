@@ -5,6 +5,8 @@ import { VibeId } from "@/data/vibes";
 import { calculateVibeScore } from "./vibeScore";
 import { api } from "./api";
 
+const VIBE_CHANGE_EVENT = "cribhaulr-vibe-change";
+
 export interface HaulState {
   // Box Configuration
   space: SpaceType;
@@ -22,6 +24,7 @@ export interface HaulState {
   setBudgetTier: (tier: BudgetTier) => void;
   setVibe: (vibe: VibeId) => void;
   setBuilderStep: (step: number) => void;
+  replaceItems: (items: Product[]) => void;
 
   // Item Management
   addItem: (item: Product) => void;
@@ -61,19 +64,23 @@ export const useHaulStore = create<HaulState>()(
 
       setVibe: (vibe: VibeId) => {
         set({ vibe });
-        // Sync document vibe theme attribute as well
-        if (typeof document !== "undefined") {
+        if (typeof window !== "undefined") {
           document.documentElement.setAttribute("data-vibe", vibe);
           try {
             localStorage.setItem("cribhaulr-vibe", vibe);
-          } catch {
-            // ignore
+          } catch (cause) {
+            console.warn("Could not save the selected room vibe:", cause);
           }
+          window.dispatchEvent(new Event(VIBE_CHANGE_EVENT));
         }
       },
 
       setBuilderStep: (builderStep: number) => {
         set({ builderStep });
+      },
+
+      replaceItems: (items: Product[]) => {
+        set({ items });
       },
 
       addItem: (item: Product) => {
@@ -120,11 +127,11 @@ export const useHaulStore = create<HaulState>()(
         set({
           space: "desk",
           budgetTier: 999,
-          vibe: "cozy",
           items: [],
           builderStep: 0,
           roommateModeEnabled: false,
         });
+        get().setVibe("cozy");
       },
 
       getTotalPrice: () => {
@@ -148,6 +155,28 @@ export const useHaulStore = create<HaulState>()(
         roommateModeEnabled: state.roommateModeEnabled,
         roommateCode: state.roommateCode,
       }),
+      skipHydration: true,
     }
   )
 );
+
+let hydrationPromise: Promise<void> | null = null;
+
+export function hydrateHaulStore(): Promise<void> {
+  if (useHaulStore.persist.hasHydrated()) {
+    return Promise.resolve();
+  }
+
+  if (!hydrationPromise) {
+    hydrationPromise = useHaulStore.persist
+      .rehydrate()
+      .catch((cause: unknown) => {
+        console.error("Could not restore the saved haul:", cause);
+      })
+      .finally(() => {
+        hydrationPromise = null;
+      });
+  }
+
+  return hydrationPromise;
+}

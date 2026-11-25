@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { Monitor, Bed, Home, Sparkles, Check, IndianRupee } from "lucide-react";
-import { Card } from "@/components/ui/Card";
+import { Monitor, Bed, Home, Check } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Sticker } from "@/components/ui/Sticker";
 import { SpaceType, BudgetTier } from "@/types";
@@ -92,15 +91,15 @@ export function StepSpaceBudget({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black font-display text-[var(--text-primary)]">
+            <h2 className="text-xl sm:text-2xl font-black font-display text-ink">
               Step 1: Choose Your Space
             </h2>
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium">
+            <p className="text-xs sm:text-sm text-muted font-medium">
               Where do you spend 90% of your time in the hostel?
             </p>
           </div>
           <Sticker color="vibe" tilt="right">
-            🎯 STEP 1 / 4
+            🎯 STEP 1 / 5
           </Sticker>
         </div>
 
@@ -113,27 +112,27 @@ export function StepSpaceBudget({
               <div
                 key={item.id}
                 onClick={() => onSelectSpace(item.id)}
-                className={`p-5 rounded-3xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                className={`p-5 rounded-card border-width-theme transition-all cursor-pointer relative flex flex-col justify-between ${
                   isSelected
-                    ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] shadow-[5px_5px_0px_var(--shadow-color)] -translate-y-1"
-                    : "bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_var(--shadow-color)]"
+                    ? "bg-primary text-on-primary border-line sticker-shadow -translate-y-1"
+                    : "bg-surface text-ink border-line sticker-shadow hover:-translate-y-0.5 hover:sticker-shadow"
                 }`}
               >
                 <div>
                   <div className="flex items-start justify-between">
                     <div
-                      className={`w-12 h-12 rounded-2xl border-2 border-[var(--border-color)] flex items-center justify-center ${
+                      className={`w-12 h-12 rounded-card border-width-theme border-line flex items-center justify-center ${
                         isSelected
-                          ? "bg-[var(--bg-card)] text-[var(--text-primary)]"
-                          : "bg-[var(--bg-secondary)] text-[var(--text-primary)]"
+                          ? "bg-surface text-ink"
+                          : "bg-secondary text-on-secondary"
                       }`}
                     >
                       <Icon className="w-6 h-6" />
                     </div>
 
                     {isSelected ? (
-                      <span className="w-7 h-7 rounded-full bg-[var(--bg-card)] text-[var(--text-primary)] border-2 border-[var(--border-color)] flex items-center justify-center font-bold">
-                        <Check className="w-4 h-4 text-emerald-600 stroke-[3]" />
+                      <span className="w-7 h-7 rounded-full bg-surface text-ink border-width-theme border-line flex items-center justify-center font-bold">
+                        <Check className="w-4 h-4 text-primary stroke-[3]" />
                       </span>
                     ) : (
                       <Badge variant="outline">{item.badge}</Badge>
@@ -145,7 +144,7 @@ export function StepSpaceBudget({
                   </h3>
                   <span
                     className={`text-xs font-semibold block mt-0.5 ${
-                      isSelected ? "text-[var(--accent-text)]/90" : "text-[var(--accent)]"
+                      isSelected ? "text-on-accent" : "text-muted"
                     }`}
                   >
                     {item.subtitle}
@@ -153,7 +152,7 @@ export function StepSpaceBudget({
 
                   <p
                     className={`text-xs mt-2 line-clamp-2 leading-relaxed ${
-                      isSelected ? "text-[var(--accent-text)]/90" : "text-[var(--text-secondary)]"
+                      isSelected ? "text-on-accent" : "text-muted"
                     }`}
                   >
                     {item.description}
@@ -173,13 +172,13 @@ export function StepSpaceBudget({
       </div>
 
       {/* 2. Budget Tier Selection */}
-      <div className="space-y-4 pt-4 border-t-2 border-[var(--border-color)]/30">
+      <div className="space-y-4 pt-4 border-t-width-theme border-line/30">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black font-display text-[var(--text-primary)]">
-              Step 2: Lock Your Budget Tier
+            <h2 className="text-xl sm:text-2xl font-black font-display text-ink">
+              Step 1: Set Your Budget Tier
             </h2>
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] font-medium">
+            <p className="text-xs sm:text-sm text-muted font-medium">
               We&apos;ll auto-select starter items to maximize your vibe within this limit.
             </p>
           </div>
@@ -193,10 +192,10 @@ export function StepSpaceBudget({
               <div
                 key={tierItem.tier}
                 onClick={() => onSelectBudget(tierItem.tier)}
-                className={`p-5 rounded-3xl border-2 transition-all cursor-pointer relative flex flex-col justify-between ${
+                className={`p-5 rounded-card border-width-theme transition-all cursor-pointer relative flex flex-col justify-between ${
                   isSelected
-                    ? "bg-[var(--accent)] text-[var(--accent-text)] border-[var(--border-color)] shadow-[5px_5px_0px_var(--shadow-color)] -translate-y-1"
-                    : "bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_var(--shadow-color)]"
+                    ? "bg-primary text-on-primary border-line sticker-shadow -translate-y-1"
+                    : "bg-surface text-ink border-line sticker-shadow hover:-translate-y-0.5 hover:sticker-shadow"
                 }`}
               >
                 <div>
@@ -214,8 +213,8 @@ export function StepSpaceBudget({
                       <span
                         className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
                           isSelected
-                            ? "bg-[var(--bg-card)] text-[var(--text-primary)] border-[var(--border-color)]"
-                            : "bg-[var(--sticker-bg)] text-[var(--sticker-text)] border-[var(--border-color)]"
+                            ? "bg-surface text-ink border-line"
+                            : "bg-accent text-on-accent border-line"
                         }`}
                       >
                         {tierItem.badge}
@@ -225,7 +224,7 @@ export function StepSpaceBudget({
 
                   <p
                     className={`text-xs mt-3 leading-relaxed ${
-                      isSelected ? "text-[var(--accent-text)]/90" : "text-[var(--text-secondary)]"
+                      isSelected ? "text-on-accent" : "text-muted"
                     }`}
                   >
                     {tierItem.subtitle}
@@ -234,7 +233,7 @@ export function StepSpaceBudget({
 
                 <div className="mt-5 pt-3 border-t border-current/20 flex items-center justify-between text-xs font-bold font-display">
                   <span>Expected Box Size:</span>
-                  <span className="px-2 py-0.5 rounded-md bg-black/10">
+                  <span className="px-2 py-0.5 rounded-btn bg-ink/10">
                     {tierItem.itemCount}
                   </span>
                 </div>
